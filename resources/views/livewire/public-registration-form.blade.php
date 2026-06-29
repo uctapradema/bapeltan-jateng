@@ -1,234 +1,204 @@
 <div>
     <div class="max-w-6xl mx-auto">
 
-        {{-- Hero Info --}}
-        <div class="text-center mb-12 animate-in">
-            <div class="inline-flex items-center gap-2 bg-blue-50 text-blue-700 px-5 py-2.5 rounded-full text-sm font-semibold mb-5 border border-blue-100">
-                <i class="fas fa-graduation-cap"></i>
+        {{-- Hero --}}
+        <div class="text-center mb-14 anim-in">
+            <div class="inline-flex items-center gap-2 bg-sky-50 text-sky-700 px-5 py-2 rounded-full text-sm font-semibold mb-5 border border-sky-100">
+                <i class="fas fa-graduation-cap" aria-hidden="true"></i>
                 Pendaftaran {{ date('Y') }}
             </div>
-            <h1 class="text-3xl lg:text-4xl font-extrabold text-gray-900 mb-4 tracking-tight leading-tight">
+            <h1 class="text-3xl lg:text-4xl font-extrabold tracking-tight leading-tight mb-4" style="color: var(--primary)">
                 {{ $pengaturan->judul ?? 'FORMULIR PENDAFTARAN' }}
             </h1>
-            <p class="text-lg text-gray-500 max-w-2xl mx-auto leading-relaxed">
+            <p class="text-lg max-w-2xl mx-auto leading-relaxed" style="color: #64748B">
                 {{ $pengaturan->sub_judul ?? '' }}
             </p>
             @if($pengaturan && $pengaturan->tanggal_tutup)
             <div class="mt-5 inline-flex items-center gap-2.5 bg-amber-50 text-amber-700 px-5 py-2.5 rounded-xl text-sm font-semibold border border-amber-200">
-                <i class="fas fa-clock"></i>
+                <i class="fas fa-clock" aria-hidden="true"></i>
                 Batas Pendaftaran: {{ \Carbon\Carbon::parse($pengaturan->tanggal_tutup)->translatedFormat('d MMMM Y') }}
             </div>
             @endif
         </div>
 
-        {{-- Alert Messages --}}
+        {{-- Alerts --}}
         @if (session()->has('success'))
-            <div class="alert alert-success mb-8 shadow-sm">
-                <i class="fas fa-check-circle text-lg"></i>
+            <div class="flex items-center gap-3 bg-emerald-50 border border-emerald-200 text-emerald-700 px-5 py-4 rounded-xl mb-8" role="alert">
+                <i class="fas fa-check-circle text-lg" aria-hidden="true"></i>
                 <span class="font-medium">{{ session('success') }}</span>
             </div>
         @endif
         @if (session()->has('error'))
-            <div class="alert alert-error mb-8 shadow-sm">
-                <i class="fas fa-exclamation-circle text-lg"></i>
+            <div class="flex items-center gap-3 bg-red-50 border border-red-200 text-red-700 px-5 py-4 rounded-xl mb-8" role="alert">
+                <i class="fas fa-exclamation-circle text-lg" aria-hidden="true"></i>
                 <span class="font-medium">{{ session('error') }}</span>
             </div>
         @endif
 
-        {{-- Two Column Layout --}}
+        {{-- Layout: Form (3) + Sidebar (2) --}}
         <div class="grid lg:grid-cols-5 gap-10">
 
-            {{-- Main Form (3 cols) --}}
+            {{-- Form --}}
             <div class="lg:col-span-3">
-
-                <div class="form-card animate-in delay-1">
+                <div class="card-pro anim-in d1">
                     <form wire:submit="create">
-                        <div class="section-header">
-                            <div class="icon-box">
-                                <i class="fas fa-user-plus"></i>
-                            </div>
+                        <div class="section-hdr">
+                            <div class="icon-box"><i class="fas fa-user-plus" aria-hidden="true"></i></div>
                             <div>
                                 <h2 class="text-lg font-bold">FORMULIR PENDAFTARAN</h2>
-                                <p class="text-blue-200/80 text-sm mt-0.5">Lengkapi semua data dengan benar</p>
+                                <p class="text-slate-300 text-sm mt-0.5">Lengkapi semua data dengan benar</p>
                             </div>
                         </div>
 
                         <div class="p-8 lg:p-10">
 
-                            {{-- Syarat & Ketentuan --}}
-                            <div class="mb-10 p-5 bg-blue-50/60 border border-blue-100 rounded-2xl">
-                                <h3 class="font-bold text-blue-900 mb-4 flex items-center gap-2.5 text-sm">
-                                    <div class="w-7 h-7 bg-blue-100 rounded-lg flex items-center justify-center">
-                                        <i class="fas fa-clipboard-check text-blue-600 text-xs"></i>
-                                    </div>
+                            {{-- Syarat --}}
+                            <div class="mb-10 p-5 rounded-xl border" style="background: #EFF6FF; border-color: #BFDBFE;">
+                                <h3 class="font-bold mb-4 flex items-center gap-2.5 text-sm" style="color: #1E40AF">
+                                    <span class="w-7 h-7 rounded-lg flex items-center justify-center" style="background: #DBEAFE">
+                                        <i class="fas fa-clipboard-check text-xs" aria-hidden="true"></i>
+                                    </span>
                                     Syarat dan Ketentuan
                                 </h3>
-                                <ul class="text-sm text-blue-800 space-y-2 ml-9">
+                                <ul class="text-sm space-y-2 ml-9" style="color: #1E40AF">
                                     @if (!empty($pengaturan->persyaratan))
                                         @foreach ($pengaturan->persyaratan as $item)
                                             <li class="flex items-start gap-2.5">
-                                                <i class="fas fa-check-circle text-blue-400 text-xs mt-1 flex-shrink-0"></i>
+                                                <i class="fas fa-check-circle text-xs mt-1 flex-shrink-0 opacity-60" aria-hidden="true"></i>
                                                 <span>{{ $item['nama'] ?? $item }}</span>
                                             </li>
                                         @endforeach
                                     @else
-                                        <li class="text-gray-400">Tidak ada persyaratan tersedia.</li>
+                                        <li class="opacity-60">Tidak ada persyaratan tersedia.</li>
                                     @endif
                                 </ul>
                             </div>
 
                             {{-- STEP 1 --}}
                             <div class="mb-10">
-                                <div class="flex items-center gap-3 mb-6">
-                                    <div class="step-badge">1</div>
+                                <div class="flex items-center gap-3 mb-7">
+                                    <div class="step-num">1</div>
                                     <div>
-                                        <h3 class="font-bold text-gray-900">DATA PERSONAL</h3>
-                                        <p class="text-gray-400 text-sm">Identitas diri peserta</p>
+                                        <h3 class="font-bold" style="color: var(--primary)">DATA PERSONAL</h3>
+                                        <p class="text-sm" style="color: #94A3B8">Identitas diri peserta</p>
                                     </div>
-                                    <div class="flex-1 h-px bg-gradient-to-r from-gray-200 to-transparent ml-2"></div>
+                                    <div class="flex-1 h-px ml-2" style="background: linear-gradient(to right, #E2E8F0, transparent)"></div>
                                 </div>
 
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-5">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-x-7 gap-y-6">
 
                                     {{-- Kabupaten --}}
-                                    <div class="form-control" x-data="searchableSelect()">
-                                        <label class="label py-1.5">
-                                            <span class="label-text font-semibold text-gray-700">Kabupaten / Kota</span>
-                                            <span class="label-text-alt text-red-400 text-xs">*wajib</span>
-                                        </label>
+                                    <div x-data="searchableSelect()">
+                                        <label class="label-pro">Kabupaten / Kota <span class="req">*</span></label>
                                         <div class="relative">
-                                            <input type="text"
-                                                class="input input-bordered w-full pr-10 bg-gray-50/50"
+                                            <input type="text" class="input-pro" style="padding-right: 40px"
                                                 placeholder="Ketik nama kabupaten..."
                                                 x-model="query"
                                                 @focus="open = true"
                                                 @click.outside="open = false"
-                                                autocomplete="off" />
-                                            <i class="fas fa-search absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-300 pointer-events-none"></i>
+                                                autocomplete="off"
+                                                aria-label="Cari kabupaten" />
+                                            <i class="fas fa-search absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none" style="color: #94A3B8" aria-hidden="true"></i>
                                             <div x-show="open &amp;&amp; filtered.length > 0"
                                                 x-transition
-                                                class="absolute z-50 w-full mt-1.5 bg-white border border-gray-200 rounded-xl shadow-xl max-h-64 overflow-y-auto">
+                                                class="absolute z-50 w-full mt-1.5 bg-white border rounded-xl shadow-xl max-h-64 overflow-y-auto"
+                                                style="border-color: #E2E8F0"
+                                                role="listbox">
                                                 <template x-for="item in filtered" :key="item.id">
-                                                    <div class="px-4 py-3 cursor-pointer hover:bg-blue-50 transition-colors border-b border-gray-50 last:border-0"
-                                                        :class="{ 'bg-blue-50 text-blue-700 font-medium': selectedId == item.id }"
-                                                        @click="select(item)">
+                                                    <div class="px-4 py-3 cursor-pointer transition-colors border-b last:border-0"
+                                                        style="border-color: #F1F5F9"
+                                                        :class="{ 'font-semibold': selectedId == item.id }"
+                                                        :style="selectedId == item.id ? 'background: #EFF6FF; color: #0369A1' : ''"
+                                                        @click="select(item)"
+                                                        role="option"
+                                                        :aria-selected="selectedId == item.id">
                                                         <span x-text="item.nama" class="text-sm"></span>
                                                     </div>
                                                 </template>
                                             </div>
                                         </div>
                                         <input type="hidden" wire:model="kabupaten_id" :value="selectedId" />
-                                        @error('kabupaten_id') <span class="label-text-alt text-error text-xs mt-1.5">{{ $message }}</span> @enderror
+                                        @error('kabupaten_id') <span class="error-msg">{{ $message }}</span> @enderror
                                     </div>
 
                                     {{-- NIK --}}
-                                    <div class="form-control">
-                                        <label class="label py-1.5" for="nik">
-                                            <span class="label-text font-semibold text-gray-700">Nomor Induk Kependudukan</span>
-                                            <span class="label-text-alt text-red-400 text-xs">*wajib</span>
-                                        </label>
-                                        <div class="relative">
-                                            <input wire:model="nik" type="text" id="nik" maxlength="16"
-                                                placeholder="16 digit NIK"
-                                                class="input input-bordered w-full bg-gray-50/50 pl-10" />
-                                            <i class="fas fa-id-card absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-300"></i>
+                                    <div>
+                                        <label class="label-pro" for="nik">Nomor Induk Kependudukan <span class="req">*</span></label>
+                                        <div class="icon-field">
+                                            <i class="fas fa-id-card icon-el" aria-hidden="true"></i>
+                                            <input wire:model="nik" type="text" id="nik" maxlength="16" class="input-pro has-icon" placeholder="16 digit NIK" />
                                         </div>
-                                        @error('nik') <span class="label-text-alt text-error text-xs mt-1.5">{{ $message }}</span> @enderror
+                                        @error('nik') <span class="error-msg">{{ $message }}</span> @enderror
                                     </div>
 
-                                    {{-- Nama Lengkap --}}
-                                    <div class="form-control md:col-span-2">
-                                        <label class="label py-1.5" for="nama">
-                                            <span class="label-text font-semibold text-gray-700">Nama Lengkap</span>
-                                            <span class="label-text-alt text-red-400 text-xs">*wajib</span>
-                                        </label>
-                                        <div class="relative">
-                                            <input wire:model="nama" type="text" id="nama"
-                                                placeholder="Sesuai KTP (huruf kapital)"
-                                                class="input input-bordered w-full bg-gray-50/50 pl-10" />
-                                            <i class="fas fa-user absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-300"></i>
+                                    {{-- Nama --}}
+                                    <div class="md:col-span-2">
+                                        <label class="label-pro" for="nama">Nama Lengkap <span class="req">*</span></label>
+                                        <div class="icon-field">
+                                            <i class="fas fa-user icon-el" aria-hidden="true"></i>
+                                            <input wire:model="nama" type="text" id="nama" class="input-pro has-icon" placeholder="Sesuai KTP (huruf kapital)" />
                                         </div>
-                                        @error('nama') <span class="label-text-alt text-error text-xs mt-1.5">{{ $message }}</span> @enderror
+                                        @error('nama') <span class="error-msg">{{ $message }}</span> @enderror
                                     </div>
 
                                     {{-- Tempat Lahir --}}
-                                    <div class="form-control">
-                                        <label class="label py-1.5" for="tempat_lahir">
-                                            <span class="label-text font-semibold text-gray-700">Tempat Lahir</span>
-                                            <span class="label-text-alt text-red-400 text-xs">*wajib</span>
-                                        </label>
-                                        <div class="relative">
-                                            <input wire:model="tempat_lahir" type="text" id="tempat_lahir"
-                                                placeholder="Kota / Kabupaten lahir"
-                                                class="input input-bordered w-full bg-gray-50/50 pl-10" />
-                                            <i class="fas fa-map-pin absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-300"></i>
+                                    <div>
+                                        <label class="label-pro" for="tempat_lahir">Tempat Lahir <span class="req">*</span></label>
+                                        <div class="icon-field">
+                                            <i class="fas fa-map-pin icon-el" aria-hidden="true"></i>
+                                            <input wire:model="tempat_lahir" type="text" id="tempat_lahir" class="input-pro has-icon" placeholder="Kota / Kabupaten lahir" />
                                         </div>
-                                        @error('tempat_lahir') <span class="label-text-alt text-error text-xs mt-1.5">{{ $message }}</span> @enderror
+                                        @error('tempat_lahir') <span class="error-msg">{{ $message }}</span> @enderror
                                     </div>
 
                                     {{-- Tanggal Lahir --}}
-                                    <div class="form-control">
-                                        <label class="label py-1.5" for="tanggal_lahir">
-                                            <span class="label-text font-semibold text-gray-700">Tanggal Lahir</span>
-                                            <span class="label-text-alt text-red-400 text-xs">*wajib</span>
-                                        </label>
-                                        <div class="relative">
-                                            <input wire:model="tanggal_lahir" type="date" id="tanggal_lahir"
-                                                class="input input-bordered w-full bg-gray-50/50 pl-10" />
-                                            <i class="fas fa-calendar absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-300"></i>
+                                    <div>
+                                        <label class="label-pro" for="tanggal_lahir">Tanggal Lahir <span class="req">*</span></label>
+                                        <div class="icon-field">
+                                            <i class="fas fa-calendar icon-el" aria-hidden="true"></i>
+                                            <input wire:model="tanggal_lahir" type="date" id="tanggal_lahir" class="input-pro has-icon" />
                                         </div>
-                                        @error('tanggal_lahir') <span class="label-text-alt text-error text-xs mt-1.5">{{ $message }}</span> @enderror
+                                        @error('tanggal_lahir') <span class="error-msg">{{ $message }}</span> @enderror
                                     </div>
 
                                     {{-- Jenis Kelamin --}}
-                                    <div class="form-control">
-                                        <label class="label py-1.5" for="jenis_kelamin">
-                                            <span class="label-text font-semibold text-gray-700">Jenis Kelamin</span>
-                                            <span class="label-text-alt text-red-400 text-xs">*wajib</span>
-                                        </label>
-                                        <select wire:model="jenis_kelamin" id="jenis_kelamin" class="select select-bordered w-full bg-gray-50/50">
+                                    <div>
+                                        <label class="label-pro" for="jenis_kelamin">Jenis Kelamin <span class="req">*</span></label>
+                                        <select wire:model="jenis_kelamin" id="jenis_kelamin" class="select-pro">
                                             <option value="">Pilih Jenis Kelamin</option>
                                             <option value="Laki-laki">Laki-laki</option>
                                             <option value="Perempuan">Perempuan</option>
                                         </select>
-                                        @error('jenis_kelamin') <span class="label-text-alt text-error text-xs mt-1.5">{{ $message }}</span> @enderror
+                                        @error('jenis_kelamin') <span class="error-msg">{{ $message }}</span> @enderror
                                     </div>
 
-                                    {{-- Nomor Telepon --}}
-                                    <div class="form-control">
-                                        <label class="label py-1.5" for="nomor_telepon">
-                                            <span class="label-text font-semibold text-gray-700">Nomor Telepon / WA</span>
-                                            <span class="label-text-alt text-red-400 text-xs">*wajib</span>
-                                        </label>
-                                        <div class="relative">
-                                            <input wire:model="nomor_telepon" type="tel" id="nomor_telepon"
-                                                placeholder="08xxxxxxxxxx"
-                                                class="input input-bordered w-full bg-gray-50/50 pl-10" />
-                                            <i class="fas fa-phone absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-300"></i>
+                                    {{-- Telepon --}}
+                                    <div>
+                                        <label class="label-pro" for="nomor_telepon">Nomor Telepon / WA <span class="req">*</span></label>
+                                        <div class="icon-field">
+                                            <i class="fas fa-phone icon-el" aria-hidden="true"></i>
+                                            <input wire:model="nomor_telepon" type="tel" id="nomor_telepon" class="input-pro has-icon" placeholder="08xxxxxxxxxx" />
                                         </div>
-                                        @error('nomor_telepon') <span class="label-text-alt text-error text-xs mt-1.5">{{ $message }}</span> @enderror
+                                        @error('nomor_telepon') <span class="error-msg">{{ $message }}</span> @enderror
                                     </div>
                                 </div>
                             </div>
 
                             {{-- STEP 2 --}}
                             <div class="mb-10">
-                                <div class="flex items-center gap-3 mb-6">
-                                    <div class="step-badge">2</div>
+                                <div class="flex items-center gap-3 mb-7">
+                                    <div class="step-num">2</div>
                                     <div>
-                                        <h3 class="font-bold text-gray-900">DATA TAMBAHAN</h3>
-                                        <p class="text-gray-400 text-sm">Informasi pendukung</p>
+                                        <h3 class="font-bold" style="color: var(--primary)">DATA TAMBAHAN</h3>
+                                        <p class="text-sm" style="color: #94A3B8">Informasi pendukung</p>
                                     </div>
-                                    <div class="flex-1 h-px bg-gradient-to-r from-gray-200 to-transparent ml-2"></div>
+                                    <div class="flex-1 h-px ml-2" style="background: linear-gradient(to right, #E2E8F0, transparent)"></div>
                                 </div>
 
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-5">
-                                    <div class="form-control">
-                                        <label class="label py-1.5" for="agama">
-                                            <span class="label-text font-semibold text-gray-700">Agama</span>
-                                            <span class="label-text-alt text-red-400 text-xs">*wajib</span>
-                                        </label>
-                                        <select wire:model="agama" id="agama" class="select select-bordered w-full bg-gray-50/50">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-x-7 gap-y-6">
+                                    <div>
+                                        <label class="label-pro" for="agama">Agama <span class="req">*</span></label>
+                                        <select wire:model="agama" id="agama" class="select-pro">
                                             <option value="">Pilih Agama</option>
                                             <option value="Islam">Islam</option>
                                             <option value="Kristen">Kristen</option>
@@ -237,30 +207,24 @@
                                             <option value="Buddha">Buddha</option>
                                             <option value="Konghucu">Konghucu</option>
                                         </select>
-                                        @error('agama') <span class="label-text-alt text-error text-xs mt-1.5">{{ $message }}</span> @enderror
+                                        @error('agama') <span class="error-msg">{{ $message }}</span> @enderror
                                     </div>
 
-                                    <div class="form-control">
-                                        <label class="label py-1.5" for="status_pernikahan">
-                                            <span class="label-text font-semibold text-gray-700">Status Pernikahan</span>
-                                            <span class="label-text-alt text-red-400 text-xs">*wajib</span>
-                                        </label>
-                                        <select wire:model="status_pernikahan" id="status_pernikahan" class="select select-bordered w-full bg-gray-50/50">
+                                    <div>
+                                        <label class="label-pro" for="status_pernikahan">Status Pernikahan <span class="req">*</span></label>
+                                        <select wire:model="status_pernikahan" id="status_pernikahan" class="select-pro">
                                             <option value="">Pilih Status</option>
                                             <option value="Belum Kawin">Belum Kawin</option>
                                             <option value="Kawin">Kawin</option>
                                             <option value="Cerai Hidup">Cerai Hidup</option>
                                             <option value="Cerai Mati">Cerai Mati</option>
                                         </select>
-                                        @error('status_pernikahan') <span class="label-text-alt text-error text-xs mt-1.5">{{ $message }}</span> @enderror
+                                        @error('status_pernikahan') <span class="error-msg">{{ $message }}</span> @enderror
                                     </div>
 
-                                    <div class="form-control">
-                                        <label class="label py-1.5" for="pendidikan_terakhir">
-                                            <span class="label-text font-semibold text-gray-700">Pendidikan Terakhir</span>
-                                            <span class="label-text-alt text-red-400 text-xs">*wajib</span>
-                                        </label>
-                                        <select wire:model="pendidikan_terakhir" id="pendidikan_terakhir" class="select select-bordered w-full bg-gray-50/50">
+                                    <div>
+                                        <label class="label-pro" for="pendidikan_terakhir">Pendidikan Terakhir <span class="req">*</span></label>
+                                        <select wire:model="pendidikan_terakhir" id="pendidikan_terakhir" class="select-pro">
                                             <option value="">Pilih Pendidikan</option>
                                             <option value="SD">SD</option>
                                             <option value="SMP">SMP</option>
@@ -273,171 +237,126 @@
                                             <option value="S2">S2</option>
                                             <option value="S3">S3</option>
                                         </select>
-                                        @error('pendidikan_terakhir') <span class="label-text-alt text-error text-xs mt-1.5">{{ $message }}</span> @enderror
+                                        @error('pendidikan_terakhir') <span class="error-msg">{{ $message }}</span> @enderror
                                     </div>
 
-                                    <div class="form-control">
-                                        <label class="label py-1.5" for="pekerjaan">
-                                            <span class="label-text font-semibold text-gray-700">Pekerjaan</span>
-                                            <span class="label-text-alt text-red-400 text-xs">*wajib</span>
-                                        </label>
-                                        <div class="relative">
-                                            <input wire:model="pekerjaan" type="text" id="pekerjaan"
-                                                placeholder="Contoh: Petani"
-                                                class="input input-bordered w-full bg-gray-50/50 pl-10" />
-                                            <i class="fas fa-briefcase absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-300"></i>
+                                    <div>
+                                        <label class="label-pro" for="pekerjaan">Pekerjaan <span class="req">*</span></label>
+                                        <div class="icon-field">
+                                            <i class="fas fa-briefcase icon-el" aria-hidden="true"></i>
+                                            <input wire:model="pekerjaan" type="text" id="pekerjaan" class="input-pro has-icon" placeholder="Contoh: Petani" />
                                         </div>
-                                        @error('pekerjaan') <span class="label-text-alt text-error text-xs mt-1.5">{{ $message }}</span> @enderror
+                                        @error('pekerjaan') <span class="error-msg">{{ $message }}</span> @enderror
                                     </div>
 
-                                    <div class="form-control">
-                                        <label class="label py-1.5" for="usaha_tani">
-                                            <span class="label-text font-semibold text-gray-700">Komoditas / Usaha Tani</span>
-                                            <span class="label-text-alt text-red-400 text-xs">*wajib</span>
-                                        </label>
-                                        <div class="relative">
-                                            <input wire:model="usaha_tani" type="text" id="usaha_tani"
-                                                placeholder="Contoh: Padi, Jagung"
-                                                class="input input-bordered w-full bg-gray-50/50 pl-10" />
-                                            <i class="fas fa-seedling absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-300"></i>
+                                    <div>
+                                        <label class="label-pro" for="usaha_tani">Komoditas / Usaha Tani <span class="req">*</span></label>
+                                        <div class="icon-field">
+                                            <i class="fas fa-seedling icon-el" aria-hidden="true"></i>
+                                            <input wire:model="usaha_tani" type="text" id="usaha_tani" class="input-pro has-icon" placeholder="Contoh: Padi, Jagung" />
                                         </div>
-                                        @error('usaha_tani') <span class="label-text-alt text-error text-xs mt-1.5">{{ $message }}</span> @enderror
+                                        @error('usaha_tani') <span class="error-msg">{{ $message }}</span> @enderror
                                     </div>
 
-                                    <div class="form-control">
-                                        <label class="label py-1.5" for="email">
-                                            <span class="label-text font-semibold text-gray-700">Email</span>
-                                            <span class="label-text-alt text-red-400 text-xs">*wajib</span>
-                                        </label>
-                                        <div class="relative">
-                                            <input wire:model="email" type="email" id="email"
-                                                placeholder="contoh@email.com"
-                                                class="input input-bordered w-full bg-gray-50/50 pl-10" />
-                                            <i class="fas fa-envelope absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-300"></i>
+                                    <div>
+                                        <label class="label-pro" for="email">Email <span class="req">*</span></label>
+                                        <div class="icon-field">
+                                            <i class="fas fa-envelope icon-el" aria-hidden="true"></i>
+                                            <input wire:model="email" type="email" id="email" class="input-pro has-icon" placeholder="contoh@email.com" />
                                         </div>
-                                        @error('email') <span class="label-text-alt text-error text-xs mt-1.5">{{ $message }}</span> @enderror
+                                        @error('email') <span class="error-msg">{{ $message }}</span> @enderror
                                     </div>
                                 </div>
                             </div>
 
                             {{-- STEP 3 --}}
                             <div class="mb-10">
-                                <div class="flex items-center gap-3 mb-6">
-                                    <div class="step-badge">3</div>
+                                <div class="flex items-center gap-3 mb-7">
+                                    <div class="step-num">3</div>
                                     <div>
-                                        <h3 class="font-bold text-gray-900">ALAMAT & KELEMBAGAAN</h3>
-                                        <p class="text-gray-400 text-sm">Domisili dan keanggotaan poktan</p>
+                                        <h3 class="font-bold" style="color: var(--primary)">ALAMAT & KELEMBAGAAN</h3>
+                                        <p class="text-sm" style="color: #94A3B8">Domisili dan keanggotaan poktan</p>
                                     </div>
-                                    <div class="flex-1 h-px bg-gradient-to-r from-gray-200 to-transparent ml-2"></div>
+                                    <div class="flex-1 h-px ml-2" style="background: linear-gradient(to right, #E2E8F0, transparent)"></div>
                                 </div>
 
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-5">
-                                    <div class="form-control md:col-span-2">
-                                        <label class="label py-1.5" for="alamat_lengkap">
-                                            <span class="label-text font-semibold text-gray-700">Alamat Lengkap</span>
-                                            <span class="label-text-alt text-red-400 text-xs">*wajib</span>
-                                        </label>
-                                        <div class="relative">
-                                            <textarea wire:model="alamat_lengkap" id="alamat_lengkap" rows="3"
-                                                placeholder="Jalan, RT/RW, Desa/Kelurahan, Kecamatan..."
-                                                class="textarea textarea-bordered w-full bg-gray-50/50 pl-10"></textarea>
-                                            <i class="fas fa-home absolute left-3.5 top-3.5 text-gray-300"></i>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-x-7 gap-y-6">
+                                    <div class="md:col-span-2">
+                                        <label class="label-pro" for="alamat_lengkap">Alamat Lengkap <span class="req">*</span></label>
+                                        <div class="icon-field">
+                                            <i class="fas fa-home icon-el" style="top: 14px; transform: none" aria-hidden="true"></i>
+                                            <textarea wire:model="alamat_lengkap" id="alamat_lengkap" rows="3" class="textarea-pro" style="padding-left: 40px" placeholder="Jalan, RT/RW, Desa/Kelurahan, Kecamatan..."></textarea>
                                         </div>
-                                        @error('alamat_lengkap') <span class="label-text-alt text-error text-xs mt-1.5">{{ $message }}</span> @enderror
+                                        @error('alamat_lengkap') <span class="error-msg">{{ $message }}</span> @enderror
                                     </div>
 
-                                    <div class="form-control">
-                                        <label class="label py-1.5" for="nama_poktan">
-                                            <span class="label-text font-semibold text-gray-700">Nama Poktan</span>
-                                            <span class="label-text-alt text-red-400 text-xs">*wajib</span>
-                                        </label>
-                                        <div class="relative">
-                                            <input wire:model="nama_poktan" type="text" id="nama_poktan"
-                                                placeholder="Contoh: Poktan Makmur"
-                                                class="input input-bordered w-full bg-gray-50/50 pl-10" />
-                                            <i class="fas fa-users absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-300"></i>
+                                    <div>
+                                        <label class="label-pro" for="nama_poktan">Nama Poktan <span class="req">*</span></label>
+                                        <div class="icon-field">
+                                            <i class="fas fa-users icon-el" aria-hidden="true"></i>
+                                            <input wire:model="nama_poktan" type="text" id="nama_poktan" class="input-pro has-icon" placeholder="Contoh: Poktan Makmur" />
                                         </div>
-                                        @error('nama_poktan') <span class="label-text-alt text-error text-xs mt-1.5">{{ $message }}</span> @enderror
+                                        @error('nama_poktan') <span class="error-msg">{{ $message }}</span> @enderror
                                     </div>
 
-                                    <div class="form-control">
-                                        <label class="label py-1.5" for="alamat_poktan">
-                                            <span class="label-text font-semibold text-gray-700">Alamat Poktan</span>
-                                            <span class="label-text-alt text-red-400 text-xs">*wajib</span>
-                                        </label>
-                                        <div class="relative">
-                                            <input wire:model="alamat_poktan" type="text" id="alamat_poktan"
-                                                placeholder="Alamat kelompok tani"
-                                                class="input input-bordered w-full bg-gray-50/50 pl-10" />
-                                            <i class="fas fa-map-marker-alt absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-300"></i>
+                                    <div>
+                                        <label class="label-pro" for="alamat_poktan">Alamat Poktan <span class="req">*</span></label>
+                                        <div class="icon-field">
+                                            <i class="fas fa-map-marker-alt icon-el" aria-hidden="true"></i>
+                                            <input wire:model="alamat_poktan" type="text" id="alamat_poktan" class="input-pro has-icon" placeholder="Alamat kelompok tani" />
                                         </div>
-                                        @error('alamat_poktan') <span class="label-text-alt text-error text-xs mt-1.5">{{ $message }}</span> @enderror
+                                        @error('alamat_poktan') <span class="error-msg">{{ $message }}</span> @enderror
                                     </div>
 
-                                    <div class="form-control">
-                                        <label class="label py-1.5" for="nip">
-                                            <span class="label-text font-semibold text-gray-700">NIP</span>
-                                            <span class="label-text-alt text-gray-400 text-xs">(opsional)</span>
-                                        </label>
-                                        <div class="relative">
-                                            <input wire:model="nip" type="text" id="nip"
-                                                placeholder="Masukkan NIP jika ada"
-                                                class="input input-bordered w-full bg-gray-50/50 pl-10" />
-                                            <i class="fas fa-shield-alt absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-300"></i>
+                                    <div>
+                                        <label class="label-pro" for="nip">NIP <span class="opt">(opsional)</span></label>
+                                        <div class="icon-field">
+                                            <i class="fas fa-shield-alt icon-el" aria-hidden="true"></i>
+                                            <input wire:model="nip" type="text" id="nip" class="input-pro has-icon" placeholder="Masukkan NIP jika ada" />
                                         </div>
-                                        @error('nip') <span class="label-text-alt text-error text-xs mt-1.5">{{ $message }}</span> @enderror
+                                        @error('nip') <span class="error-msg">{{ $message }}</span> @enderror
                                     </div>
                                 </div>
                             </div>
 
                             {{-- STEP 4 --}}
                             <div class="mb-10">
-                                <div class="flex items-center gap-3 mb-6">
-                                    <div class="step-badge">4</div>
+                                <div class="flex items-center gap-3 mb-7">
+                                    <div class="step-num">4</div>
                                     <div>
-                                        <h3 class="font-bold text-gray-900">AKUN LOGIN</h3>
-                                        <p class="text-gray-400 text-sm">Buat akun untuk masuk panel peserta</p>
+                                        <h3 class="font-bold" style="color: var(--primary)">AKUN LOGIN</h3>
+                                        <p class="text-sm" style="color: #94A3B8">Buat akun untuk masuk panel peserta</p>
                                     </div>
-                                    <div class="flex-1 h-px bg-gradient-to-r from-gray-200 to-transparent ml-2"></div>
+                                    <div class="flex-1 h-px ml-2" style="background: linear-gradient(to right, #E2E8F0, transparent)"></div>
                                 </div>
 
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-5">
-                                    <div class="form-control">
-                                        <label class="label py-1.5" for="password">
-                                            <span class="label-text font-semibold text-gray-700">Password</span>
-                                            <span class="label-text-alt text-red-400 text-xs">*wajib</span>
-                                        </label>
-                                        <div class="relative">
-                                            <input wire:model="password" type="password" id="password"
-                                                placeholder="Minimal 6 karakter"
-                                                class="input input-bordered w-full bg-gray-50/50 pl-10" />
-                                            <i class="fas fa-lock absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-300"></i>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-x-7 gap-y-6">
+                                    <div>
+                                        <label class="label-pro" for="password">Password <span class="req">*</span></label>
+                                        <div class="icon-field">
+                                            <i class="fas fa-lock icon-el" aria-hidden="true"></i>
+                                            <input wire:model="password" type="password" id="password" class="input-pro has-icon" placeholder="Minimal 6 karakter" />
                                         </div>
-                                        @error('password') <span class="label-text-alt text-error text-xs mt-1.5">{{ $message }}</span> @enderror
+                                        @error('password') <span class="error-msg">{{ $message }}</span> @enderror
                                     </div>
 
-                                    <div class="form-control">
-                                        <label class="label py-1.5" for="password_confirmation">
-                                            <span class="label-text font-semibold text-gray-700">Ulangi Password</span>
-                                            <span class="label-text-alt text-red-400 text-xs">*wajib</span>
-                                        </label>
-                                        <div class="relative">
-                                            <input wire:model="password_confirmation" type="password" id="password_confirmation"
-                                                placeholder="Ulangi password"
-                                                class="input input-bordered w-full bg-gray-50/50 pl-10" />
-                                            <i class="fas fa-lock absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-300"></i>
+                                    <div>
+                                        <label class="label-pro" for="password_confirmation">Ulangi Password <span class="req">*</span></label>
+                                        <div class="icon-field">
+                                            <i class="fas fa-lock icon-el" aria-hidden="true"></i>
+                                            <input wire:model="password_confirmation" type="password" id="password_confirmation" class="input-pro has-icon" placeholder="Ulangi password" />
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
                             {{-- Submit --}}
-                            <div class="flex flex-col items-center gap-4 pt-6 border-t border-gray-100">
-                                <button type="submit" class="btn-submit flex items-center gap-2.5">
-                                    <i class="fas fa-paper-plane"></i>
+                            <div class="flex flex-col items-center gap-4 pt-7 border-t" style="border-color: #E2E8F0">
+                                <button type="submit" class="btn-cta">
+                                    <i class="fas fa-paper-plane" aria-hidden="true"></i>
                                     KIRIM PENDAFTARAN
                                 </button>
-                                <p class="text-sm text-gray-400 text-center max-w-md">
+                                <p class="text-sm text-center max-w-md" style="color: #94A3B8">
                                     Dengan mengirim formulir ini, saya menyetujui semua syarat dan ketentuan yang berlaku
                                 </p>
                             </div>
@@ -446,15 +365,13 @@
                 </div>
             </div>
 
-            {{-- Sidebar (2 cols) --}}
+            {{-- Sidebar --}}
             <div class="lg:col-span-2 space-y-6">
 
                 {{-- Cek NIK --}}
-                <div class="form-card animate-in delay-2" x-data="cekNik()">
-                    <div class="section-header" style="background: linear-gradient(135deg, #7f1d1d 0%, #dc2626 100%);">
-                        <div class="icon-box">
-                            <i class="fas fa-search"></i>
-                        </div>
+                <div class="card-pro anim-in d2" x-data="cekNik()">
+                    <div class="section-hdr" style="background: linear-gradient(135deg, #7F1D1D, #991B1B)">
+                        <div class="icon-box"><i class="fas fa-search" aria-hidden="true"></i></div>
                         <div>
                             <h2 class="text-base font-bold">CEK NIK</h2>
                             <p class="text-red-200/80 text-xs mt-0.5">Periksa data keikutsertaan</p>
@@ -463,24 +380,23 @@
                     <div class="p-6">
                         <div class="flex gap-3">
                             <div class="relative flex-1">
-                                <input type="text" maxlength="16" class="input input-bordered w-full pl-10 bg-gray-50/50"
-                                    placeholder="Masukkan NIK" x-model="nik">
-                                <i class="fas fa-id-card absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-300"></i>
+                                <input type="text" maxlength="16" class="input-pro has-icon" placeholder="Masukkan NIK" x-model="nik" aria-label="NIK untuk dicek" />
+                                <i class="fas fa-id-card icon-el" aria-hidden="true"></i>
                             </div>
-                            <button @click="check()" class="btn btn-error text-white px-5" :disabled="loading">
-                                <template x-if="!loading"><i class="fas fa-search"></i></template>
-                                <template x-if="loading"><i class="fas fa-spinner fa-spin"></i></template>
+                            <button @click="check()" class="btn-outline !text-white !border-red-500 !bg-red-500 hover:!bg-red-600 px-4" :disabled="loading" aria-label="Cek NIK">
+                                <template x-if="!loading"><i class="fas fa-search" aria-hidden="true"></i></template>
+                                <template x-if="loading"><i class="fas fa-spinner fa-spin" aria-hidden="true"></i></template>
                             </button>
                         </div>
 
                         <div class="mt-5 space-y-4">
                             <template x-if="result">
                                 <div class="space-y-4">
-                                    <div class="p-4 bg-green-50 border border-green-200 rounded-xl">
-                                        <h3 class="font-bold text-green-800 flex items-center gap-2 mb-3">
-                                            <i class="fas fa-check-circle"></i> NIK Ditemukan
+                                    <div class="p-4 bg-emerald-50 border border-emerald-200 rounded-xl">
+                                        <h3 class="font-bold text-emerald-800 flex items-center gap-2 mb-3">
+                                            <i class="fas fa-check-circle" aria-hidden="true"></i> NIK Ditemukan
                                         </h3>
-                                        <div class="space-y-1.5 text-sm text-green-700">
+                                        <div class="space-y-1.5 text-sm text-emerald-700">
                                             <p><span class="font-semibold">Nama:</span> <span x-text="result.nama"></span></p>
                                             <p><span class="font-semibold">NIK:</span> <span x-text="result.nik"></span></p>
                                             <p><span class="font-semibold">Alamat:</span> <span x-text="result.alamat"></span></p>
@@ -489,14 +405,14 @@
                                     </div>
 
                                     <template x-if="result.kegiatan &amp;&amp; result.kegiatan.length > 0">
-                                        <div class="p-4 bg-blue-50 border border-blue-200 rounded-xl">
-                                            <h4 class="font-semibold text-blue-900 text-sm mb-2 flex items-center gap-1.5">
-                                                <i class="fas fa-list-ul"></i> Riwayat Kegiatan
+                                        <div class="p-4 bg-sky-50 border border-sky-200 rounded-xl">
+                                            <h4 class="font-semibold text-sky-900 text-sm mb-2 flex items-center gap-1.5">
+                                                <i class="fas fa-list-ul" aria-hidden="true"></i> Riwayat Kegiatan
                                             </h4>
-                                            <ul class="text-sm text-blue-800 space-y-1.5">
+                                            <ul class="text-sm text-sky-800 space-y-1.5">
                                                 <template x-for="kg in result.kegiatan" :key="kg.kode">
                                                     <li class="flex items-start gap-2">
-                                                        <i class="fas fa-dot-circle text-blue-400 mt-1 text-[8px]"></i>
+                                                        <i class="fas fa-dot-circle text-sky-400 mt-1 text-[8px]" aria-hidden="true"></i>
                                                         <span><strong x-text="kg.nama"></strong> (<span x-text="kg.kode"></span>) <span x-text="kg.mulai"></span> - <span x-text="kg.selesai"></span></span>
                                                     </li>
                                                 </template>
@@ -505,23 +421,23 @@
                                     </template>
 
                                     <template x-if="result.kegiatan &amp;&amp; result.kegiatan.length === 0">
-                                        <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-xl">
-                                            <p class="text-yellow-700 font-semibold text-sm flex items-center gap-2">
-                                                <i class="fas fa-info-circle"></i> Belum ada riwayat kegiatan.
+                                        <div class="p-4 bg-amber-50 border border-amber-200 rounded-xl">
+                                            <p class="text-amber-700 font-semibold text-sm flex items-center gap-2">
+                                                <i class="fas fa-info-circle" aria-hidden="true"></i> Belum ada riwayat kegiatan.
                                             </p>
                                         </div>
                                     </template>
 
-                                    <div class="p-5 bg-white border border-gray-200 rounded-xl">
-                                        <h3 class="font-bold text-gray-800 mb-4 flex items-center gap-2">
-                                            <div class="w-7 h-7 bg-blue-100 rounded-lg flex items-center justify-center">
-                                                <i class="fas fa-edit text-blue-600 text-xs"></i>
-                                            </div>
+                                    <div class="p-5 bg-white border rounded-xl" style="border-color: #E2E8F0">
+                                        <h3 class="font-bold mb-4 flex items-center gap-2" style="color: var(--primary)">
+                                            <span class="w-7 h-7 rounded-lg flex items-center justify-center" style="background: #EFF6FF">
+                                                <i class="fas fa-edit text-xs" style="color: #0369A1" aria-hidden="true"></i>
+                                            </span>
                                             Daftar Pelatihan Baru
                                         </h3>
 
-                                        <div class="form-control mb-4">
-                                            <select x-model="kegiatan_id" class="select select-bordered w-full bg-gray-50/50">
+                                        <div class="mb-4">
+                                            <select x-model="kegiatan_id" class="select-pro">
                                                 <option value="">-- Pilih Pelatihan --</option>
                                                 @foreach (\App\Models\Kegiatan::aktif()->get() as $kg)
                                                     <option value="{{ $kg->id }}">
@@ -532,24 +448,24 @@
                                             </select>
                                         </div>
 
-                                        <button @click="daftarPelatihan()" class="btn btn-primary w-full text-white">
-                                            <i class="fas fa-paper-plane"></i> Daftar Pelatihan
+                                        <button @click="daftarPelatihan()" class="btn-cta w-full text-sm !py-3">
+                                            <i class="fas fa-paper-plane" aria-hidden="true"></i> Daftar Pelatihan
                                         </button>
 
                                         <template x-if="notif">
-                                            <div class="mt-4 p-3 bg-green-50 border border-green-200 rounded-xl text-green-700 text-sm text-center font-medium" x-text="notif"></div>
+                                            <div class="mt-4 p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-emerald-700 text-sm text-center font-medium" x-text="notif" role="status"></div>
                                         </template>
                                         <template x-if="notif_error">
-                                            <div class="mt-4 p-3 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm text-center font-medium" x-text="notif_error"></div>
+                                            <div class="mt-4 p-3 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm text-center font-medium" x-text="notif_error" role="alert"></div>
                                         </template>
                                     </div>
                                 </div>
                             </template>
 
                             <template x-if="error">
-                                <div class="p-4 bg-red-50 border border-red-200 rounded-xl">
+                                <div class="p-4 bg-red-50 border border-red-200 rounded-xl" role="alert">
                                     <p class="text-red-700 text-sm font-medium flex items-center gap-2">
-                                        <i class="fas fa-times-circle"></i> <span x-text="error"></span>
+                                        <i class="fas fa-times-circle" aria-hidden="true"></i> <span x-text="error"></span>
                                     </p>
                                 </div>
                             </template>
@@ -558,46 +474,46 @@
                 </div>
 
                 {{-- Fasilitas --}}
-                <div class="form-card animate-in delay-3">
+                <div class="card-pro anim-in d3">
                     <div class="p-6">
-                        <h3 class="font-bold text-gray-800 mb-5 flex items-center gap-2.5">
-                            <div class="w-9 h-9 bg-green-100 rounded-xl flex items-center justify-center">
-                                <i class="fas fa-gift text-green-600"></i>
-                            </div>
+                        <h3 class="font-bold mb-5 flex items-center gap-2.5" style="color: var(--primary)">
+                            <span class="w-9 h-9 rounded-xl flex items-center justify-center bg-emerald-100">
+                                <i class="fas fa-gift text-emerald-600" aria-hidden="true"></i>
+                            </span>
                             Fasilitas Peserta
                         </h3>
                         <div class="space-y-3">
                             @if (!empty($pengaturan->fasilitas))
                                 @foreach ($pengaturan->fasilitas as $item)
-                                    <div class="flex items-center gap-3 text-sm text-gray-600">
-                                        <div class="w-6 h-6 bg-green-50 rounded-lg flex items-center justify-center flex-shrink-0">
-                                            <i class="fas fa-check text-green-500 text-xs"></i>
-                                        </div>
+                                    <div class="flex items-center gap-3 text-sm" style="color: #475569">
+                                        <span class="w-6 h-6 rounded-lg flex items-center justify-center flex-shrink-0 bg-emerald-50">
+                                            <i class="fas fa-check text-emerald-500 text-xs" aria-hidden="true"></i>
+                                        </span>
                                         <span>{{ $item['nama'] ?? $item }}</span>
                                     </div>
                                 @endforeach
                             @else
-                                <p class="text-sm text-gray-400">Tidak ada fasilitas tersedia.</p>
+                                <p class="text-sm" style="color: #94A3B8">Tidak ada fasilitas tersedia.</p>
                             @endif
                         </div>
                     </div>
                 </div>
 
                 {{-- Lokasi --}}
-                <div class="form-card animate-in delay-4">
+                <div class="card-pro anim-in d4">
                     <div class="p-6">
-                        <h3 class="font-bold text-gray-800 mb-5 flex items-center gap-2.5">
-                            <div class="w-9 h-9 bg-red-100 rounded-xl flex items-center justify-center">
-                                <i class="fas fa-map-marker-alt text-red-500"></i>
-                            </div>
+                        <h3 class="font-bold mb-5 flex items-center gap-2.5" style="color: var(--primary)">
+                            <span class="w-9 h-9 rounded-xl flex items-center justify-center bg-red-100">
+                                <i class="fas fa-map-marker-alt text-red-500" aria-hidden="true"></i>
+                            </span>
                             Lokasi Pelatihan
                         </h3>
-                        <div class="bg-gray-50 rounded-xl p-5 border border-gray-100">
-                            <p class="text-gray-700 font-medium mb-2.5">
+                        <div class="rounded-xl p-5 border" style="background: #F8FAFC; border-color: #E2E8F0">
+                            <p class="font-medium mb-2.5" style="color: var(--primary)">
                                 {{ $pengaturan->info ?? '' }}
                             </p>
-                            <p class="text-gray-500 text-sm flex items-start gap-2.5">
-                                <i class="fas fa-location-dot text-red-400 mt-0.5"></i>
+                            <p class="text-sm flex items-start gap-2.5" style="color: #64748B">
+                                <i class="fas fa-location-dot text-red-400 mt-0.5" aria-hidden="true"></i>
                                 <span>{{ $pengaturan->lokasi ?? '' }}</span>
                             </p>
                         </div>
@@ -611,69 +527,38 @@
     <script>
         function cekNik() {
             return {
-                nik: '',
-                loading: false,
-                result: null,
-                error: null,
-                kegiatan_id: '',
-                notif: null,
-                notif_error: null,
+                nik: '', loading: false, result: null, error: null,
+                kegiatan_id: '', notif: null, notif_error: null,
 
                 async check() {
-                    this.loading = true;
-                    this.result = null;
-                    this.error = null;
+                    this.loading = true; this.result = null; this.error = null;
                     try {
-                        const response = await fetch(`/api/cek-nik?nik=${this.nik}`);
-                        const data = await response.json();
-                        if (data.success) {
-                            this.result = data.data;
-                        } else {
-                            this.error = data.message;
-                        }
-                    } catch (e) {
-                        this.error = 'Terjadi kesalahan saat memeriksa NIK.';
-                    }
+                        const r = await fetch(`/api/cek-nik?nik=${this.nik}`);
+                        const d = await r.json();
+                        d.success ? this.result = d.data : this.error = d.message;
+                    } catch (e) { this.error = 'Terjadi kesalahan saat memeriksa NIK.'; }
                     this.loading = false;
                 },
 
                 async daftarPelatihan() {
-                    this.notif = null;
-                    this.notif_error = null;
-                    if (!this.kegiatan_id) {
-                        this.notif_error = "Silakan pilih pelatihan terlebih dahulu.";
-                        return;
-                    }
+                    this.notif = null; this.notif_error = null;
+                    if (!this.kegiatan_id) { this.notif_error = "Silakan pilih pelatihan terlebih dahulu."; return; }
                     try {
-                        const send = await fetch('/api/daftar-pelatihan', {
+                        const r = await fetch('/api/daftar-pelatihan', {
                             method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                            },
-                            body: JSON.stringify({
-                                nik: this.nik,
-                                kegiatan_id: this.kegiatan_id,
-                            })
+                            headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
+                            body: JSON.stringify({ nik: this.nik, kegiatan_id: this.kegiatan_id })
                         });
-                        const data = await send.json();
-                        if (data.success) {
-                            this.notif = data.message;
-                        } else {
-                            this.notif_error = data.message;
-                        }
-                    } catch (e) {
-                        this.notif_error = "Terjadi kesalahan saat mendaftar pelatihan.";
-                    }
+                        const d = await r.json();
+                        d.success ? this.notif = d.message : this.notif_error = d.message;
+                    } catch (e) { this.notif_error = "Terjadi kesalahan saat mendaftar pelatihan."; }
                 }
             }
         }
 
         function searchableSelect() {
             return {
-                open: false,
-                query: '',
-                selectedId: '',
+                open: false, query: '', selectedId: '',
                 items: [
                     @foreach(\App\Models\Kabupaten::orderBy('nama')->get() as $kab)
                         { id: {{ $kab->id }}, nama: '{{ $kab->nama }}' },
@@ -683,11 +568,7 @@
                     if (!this.query) return this.items;
                     return this.items.filter(i => i.nama.toLowerCase().includes(this.query.toLowerCase()));
                 },
-                select(item) {
-                    this.selectedId = item.id;
-                    this.query = item.nama;
-                    this.open = false;
-                }
+                select(item) { this.selectedId = item.id; this.query = item.nama; this.open = false; }
             }
         }
     </script>
