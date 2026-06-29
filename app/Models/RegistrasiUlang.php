@@ -17,11 +17,15 @@ class RegistrasiUlang extends Model
         'tahun',
         'status',
         'catatan',
+        'sertifikat_path',
+        'catatan_sertifikat',
+        'tanggal_selesai_pelatihan',
     ];
 
     protected $casts = [
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
+        'tanggal_selesai_pelatihan' => 'date',
     ];
 
     public function peserta(): BelongsTo
@@ -32,5 +36,10 @@ class RegistrasiUlang extends Model
     public function kegiatan(): BelongsTo
     {
         return $this->belongsTo(Kegiatan::class);
+    }
+
+    public function getSertifikatUrlAttribute(): ?string
+    {
+        return $this->sertifikat_path ? asset('storage/' . $this->sertifikat_path) : null;
     }
 }

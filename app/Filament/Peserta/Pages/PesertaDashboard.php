@@ -2,6 +2,7 @@
 
 namespace App\Filament\Peserta\Pages;
 
+use App\Models\Pengaturan;
 use Filament\Pages\Page;
 use Illuminate\Support\Facades\Auth;
 
@@ -20,13 +21,60 @@ class PesertaDashboard extends Page
         return "Hai, {$nama}!";
     }
 
-    public function getSubtitle(): string
+    public function getPengaturan(): ?Pengaturan
     {
-        return 'SELAMAT DATANG DI PELATIHAN MEKANISASI, MODERNISASI DAN DIGITALISASI KOMDITAS TEMBAKAU ANGKATAN I';
+        return Pengaturan::first();
     }
 
-    public function getParagraf(): string
+    public function getJumlahPelatihan(): int
     {
-        return 'Kompetensi yang diharapkan dalam Pelatihan Mekanisasi, Modernisasi, dan Digitalisasi Komoditas Tembakau adalah kemampuan peserta dalam menguasai pengetahuan, keterampilan, dan sikap profesional untuk menerapkan prinsip-prinsip mekanisasi, modernisasi, dan digitalisasi dalam sistem agribisnis tembakau secara efektif dan berkelanjutan.';
+        $user = Auth::user();
+        if (!$user->peserta) return 0;
+
+        return $user->peserta->registrasiUlangs()->count();
+    }
+
+    public function getPelatihanDiterima(): int
+    {
+        $user = Auth::user();
+        if (!$user->peserta) return 0;
+
+        return $user->peserta->registrasiUlangs()->where('status', 'diterima')->count();
+    }
+
+    public function getPelatihanSelesai(): int
+    {
+        $user = Auth::user();
+        if (!$user->peserta) return 0;
+
+        return $user->peserta->registrasiUlangs()->where('status', 'selesai')->count();
+    }
+
+    public function getPelatihanPending(): int
+    {
+        $user = Auth::user();
+        if (!$user->peserta) return 0;
+
+        return $user->peserta->registrasiUlangs()->where('status', 'pending')->count();
+    }
+
+    public function getDaftarPelatihan(): array
+    {
+        $user = Auth::user();
+        if (!$user->peserta) return [];
+
+        return $user->peserta->registrasiUlangs()
+            ->with('kegiatan')
+            ->latest()
+            ->limit(5)
+            ->get()
+            ->map(fn ($reg) => [
+                'nama' => $reg->kegiatan->nama_pelatihan ?? '-',
+                'kode' => $reg->kegiatan->kode_pelatihan ?? '-',
+                'mulai' => $reg->kegiatan->tanggal_mulai?->format('d M Y') ?? '-',
+                'selesai' => $reg->kegiatan->tanggal_selesai?->format('d M Y') ?? '-',
+                'status' => $reg->status,
+            ])
+            ->toArray();
     }
 }

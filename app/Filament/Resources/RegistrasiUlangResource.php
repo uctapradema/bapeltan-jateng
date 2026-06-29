@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\RegistrasiUlangResource\Pages;
 use App\Filament\Resources\RegistrasiUlangResource\RelationManagers;
 use App\Models\RegistrasiUlang;
+use App\Notifications\RegistrationStatusNotification;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -93,19 +94,47 @@ class RegistrasiUlangResource extends Resource
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\Action::make('download_sertifikat')->label('Download')->icon('heroicon-o-arrow-down-tray')->url(fn($record) => $record->sertifikat_url)->openUrlInNewTab()->visible(fn($record) => !empty($record->sertifikat_path)),
-                Tables\Actions\Action::make('terima')->action(fn(RegistrasiUlang $record) => $record->update(['status' => 'diterima']))->requiresConfirmation()->color('success')->icon('heroicon-o-check')->visible(fn(RegistrasiUlang $record) => $record->status === 'pending'),
-                Tables\Actions\Action::make('tolak')->action(fn(RegistrasiUlang $record) => $record->update(['status' => 'ditolak']))->requiresConfirmation()->color('danger')->icon('heroicon-o-x-mark')->visible(fn(RegistrasiUlang $record) => $record->status === 'pending'),
+                Tables\Actions\Action::make('terima')
+                    ->action(function (RegistrasiUlang $record) {
+                        $oldStatus = $record->status;
+                        $record->update(['status' => 'diterima']);
+                        $record->peserta->user->notify(
+                            new RegistrationStatusNotification($record, $oldStatus, 'diterima')
+                        );
+                    })
+                    ->requiresConfirmation()
+                    ->color('success')
+                    ->icon('heroicon-o-check')
+                    ->visible(fn (RegistrasiUlang $record) => $record->status === 'pending'),
+
+                Tables\Actions\Action::make('tolak')
+                    ->action(function (RegistrasiUlang $record) {
+                        $oldStatus = $record->status;
+                        $record->update(['status' => 'ditolak']);
+                        $record->peserta->user->notify(
+                            new RegistrationStatusNotification($record, $oldStatus, 'ditolak')
+                        );
+                    })
+                    ->requiresConfirmation()
+                    ->color('danger')
+                    ->icon('heroicon-o-x-mark')
+                    ->visible(fn (RegistrasiUlang $record) => $record->status === 'pending'),
+
                 Tables\Actions\Action::make('selesai')
-                    ->action(
-                        fn(RegistrasiUlang $record) => $record->update([
+                    ->action(function (RegistrasiUlang $record) {
+                        $oldStatus = $record->status;
+                        $record->update([
                             'status' => 'selesai',
                             'tanggal_selesai_pelatihan' => now(),
-                        ]),
-                    )
+                        ]);
+                        $record->peserta->user->notify(
+                            new RegistrationStatusNotification($record, $oldStatus, 'selesai')
+                        );
+                    })
                     ->requiresConfirmation()
                     ->color('primary')
                     ->icon('heroicon-o-flag')
-                    ->visible(fn(RegistrasiUlang $record) => $record->status === 'diterima'),
+                    ->visible(fn (RegistrasiUlang $record) => $record->status === 'diterima'),
             ])
             ->bulkActions([Tables\Actions\BulkActionGroup::make([Tables\Actions\DeleteBulkAction::make()])]);
     }

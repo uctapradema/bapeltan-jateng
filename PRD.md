@@ -8,9 +8,9 @@
 | Field | Value |
 |-------|-------|
 | **Nama Produk** | Sistem Informasi Manajemen Pelatihan Bapeltan Jateng |
-| **Versi Dokumen** | 1.1 |
+| **Versi Dokumen** | 1.2 |
 | **Tanggal** | 29 Juni 2026 |
-| **Status** | In Progress (Phase 1 Selesai) |
+| **Status** | In Progress (Phase 2 Selesai) |
 | **Author** | Tim Pengembang |
 
 ---
@@ -1060,20 +1060,20 @@ bapeltan/
 
 ---
 
-### Phase 2 — Fitur Inti (Minggu 3-5)
+### Phase 2 — Fitur Inti (Minggu 3-5) ✅ SELESAI
 
-| # | Task | Priority | Estimasi |
-|---|------|----------|----------|
-| 2.1 | Dashboard Admin: widget statistik | P1 | 2 hari |
-| 2.2 | Dashboard Peserta: ringkasan pelatihan | P1 | 2 hari |
-| 2.3 | Manajemen User: CRUD user dengan role | P2 | 2 hari |
-| 2.4 | Profil Peserta: edit profil sendiri | P2 | 2 hari |
-| 2.5 | Notifikasi database untuk status registrasi | P2 | 2 hari |
-| 2.6 | Refactor validasi ke Form Request classes | P2 | 2 hari |
-| 2.7 | Tambahkan API Resources untuk response JSON | P3 | 1 hari |
-| 2.8 | Perbaiki Filament resource panels | P2 | 2 hari |
+| # | Task | Priority | Status | Keterangan |
+|---|------|----------|--------|------------|
+| 2.1 | Dashboard Admin: widget statistik | P1 | ✅ Selesai | `StatsOverviewWidget` (6 stats) + `RecentRegistrationsWidget` |
+| 2.2 | Dashboard Peserta: ringkasan pelatihan | P1 | ✅ Selesai | Stats cards + daftar pelatihan terbaru + info pengaturan |
+| 2.3 | Manajemen User: CRUD user dengan role | P2 | ✅ Selesai | `UserResource` dengan form, table, filter by role |
+| 2.4 | Profil Peserta: edit profil sendiri | P2 | ✅ Selesai | `Profile` page dengan form edit profil |
+| 2.5 | Notifikasi database untuk status registrasi | P2 | ✅ Selesai | `RegistrationStatusNotification` (database + email) |
+| 2.6 | Refactor validasi ke Form Request classes | P2 | ✅ Selesai | `CekNikRequest`, `DaftarPelatihanRequest` |
+| 2.7 | Tambahkan API Resources untuk response JSON | P3 | ✅ Selesai | `PesertaResource`, `KegiatanResource`, `KegiatanTypeResource`, `KabupatenResource`, `RegistrasiUlangResource` |
+| 2.8 | Perbaiki Filament resource panels | P2 | ✅ Selesai | Tambah kolom `sertifikat_path`, `catatan_sertifikat`, `tanggal_selesai_pelatihan` ke model + migration |
 
-**Deliverable**: Fitur inti lengkap dan berfungsi.
+**Deliverable**: Fitur inti lengkap dan berfungsi. ✅
 
 ---
 
@@ -1125,7 +1125,7 @@ bapeltan/
 | # | Issue | Lokasi | Solusi | Status |
 |---|-------|--------|--------|--------|
 | M1 | Relasi Group model ambigu | `Group.php` | Hapus salah satu relasi (belongsTo ATAU hasMany) | ✅ Selesai |
-| M2 | Relasi ganda Peserta-Kegiatan | `Peserta.php` | Gunakan `belongsToMany` saja, hapus `hasMany` | ⏳ Phase 2 |
+| M2 | Relasi ganda Peserta-Kegiatan | `Peserta.php` | Gunakan `belongsToMany` saja, hapus `hasMany` | ✅ Selesai |
 | M3 | Unique constraint vs logic mismatch | `registrasi_ulangs` vs `web.php:73` | Samakan logika validasi | ✅ Selesai |
 | M4 | API routes di `web.php` | `routes/web.php` | Pindah ke `routes/api.php` | ✅ Selesai |
 | M5 | Timezone `UTC`, locale `en` | `config/app.php` | Set `Asia/Jakarta` dan `id` | ✅ Selesai |
@@ -1135,10 +1135,10 @@ bapeltan/
 | # | Issue | Solusi | Status |
 |---|-------|--------|--------|
 | m1 | Tailwind CDN redundan di Blade views | Hapus CDN, Vite sudah handle | ✅ Selesai |
-| m2 | Tidak ada Form Request classes | Buat untuk setiap validasi | ⏳ Phase 2 |
-| m3 | Tidak ada API resources/transformers | Buat untuk response JSON konsisten | ⏳ Phase 2 |
+| m2 | Tidak ada Form Request classes | Buat untuk setiap validasi | ✅ Selesai |
+| m3 | Tidak ada API resources/transformers | Buat untuk response JSON konsisten | ✅ Selesai |
 | m4 | Tidak ada logging untuk aksi penting | Tambah activity log | ⏳ Phase 3 |
-| m5 | `Pengaturan` tidak ada validasi input | Tambah validation rules | ⏳ Phase 2 |
+| m5 | `Pengaturan` tidak ada validasi input | Tambah validation rules | ✅ Selesai |
 | m6 | `RegistrasiZilenial` model kosong | Implementasi atau hapus | ⏳ Phase 3 |
 
 ---

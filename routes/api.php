@@ -1,23 +1,18 @@
 <?php
 
+use App\Http\Requests\Api\CekNikRequest;
+use App\Http\Requests\Api\DaftarPelatihanRequest;
+use App\Http\Resources\PesertaResource;
 use App\Models\Peserta;
 use App\Models\Kegiatan;
 use App\Models\RegistrasiUlang;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 // API untuk cek NIK peserta ============================
-Route::get('/cek-nik', function (Request $request) {
-    $nik = $request->query('nik');
-
-    if (!$nik || strlen($nik) != 16 || !ctype_digit($nik)) {
-        return response()->json([
-            'success' => false,
-            'message' => 'NIK tidak valid. Panjang NIK harus 16 digit angka.',
-        ], 422);
-    }
-
-    $peserta = Peserta::with('registrasiUlangs.kegiatan')->where('nik', $nik)->first();
+Route::get('/cek-nik', function (CekNikRequest $request) {
+    $peserta = Peserta::with(['registrasiUlangs.kegiatan', 'kabupaten'])
+        ->where('nik', $request->nik)
+        ->first();
 
     if (!$peserta) {
         return response()->json([
@@ -26,13 +21,14 @@ Route::get('/cek-nik', function (Request $request) {
         ], 404);
     }
 
-    $kegiatan = $peserta->registrasiUlangs->map(
-        fn($p) => [
-            'nama' => $p->kegiatan->nama_pelatihan,
-            'kode' => $p->kegiatan->kode_pelatihan,
-            'mulai' => $p->kegiatan->tanggal_mulai->format('d-m-Y'),
-            'selesai' => $p->kegiatan->tanggal_selesai->format('d-m-Y'),
-            'status' => $p->status,
+    $registrasi = $peserta->registrasiUlangs->map(
+        fn ($reg) => [
+            'id' => $reg->id,
+            'nama' => $reg->kegiatan->nama_pelatihan,
+            'kode' => $reg->kegiatan->kode_pelatihan,
+            'mulai' => $reg->kegiatan->tanggal_mulai->format('d-m-Y'),
+            'selesai' => $reg->kegiatan->tanggal_selesai->format('d-m-Y'),
+            'status' => $reg->status,
         ],
     );
 
@@ -43,23 +39,19 @@ Route::get('/cek-nik', function (Request $request) {
             'nama' => $peserta->nama,
             'alamat' => $peserta->alamat_lengkap,
             'poktan' => $peserta->nama_poktan,
-            'kegiatan' => $kegiatan,
+            'kabupaten' => $peserta->kabupaten->name ?? null,
+            'registrasi' => $registrasi,
         ],
     ]);
 })->middleware('throttle:30,1');
 
 // API untuk daftar pelatihan ============================
-Route::post('/daftar-pelatihan', function (Request $request) {
-    $validated = $request->validate([
-        'nik' => 'required|digits:16',
-        'kegiatan_id' => 'required|exists:kegiatans,id',
-    ]);
-
+Route::post('/daftar-pelatihan', function (DaftarPelatihanRequest $request) {
     try {
-        $peserta = Peserta::where('nik', $validated['nik'])->firstOrFail();
-        $kegiatan = Kegiatan::with('kegiatanType')->findOrFail($validated['kegiatan_id']);
+        $peserta = Peserta::where('nik', $request->nik)->firstOrFail();
+        $kegiatan = Kegiatan::with('kegiatanType')->findOrFail($request->kegiatan_id);
 
-        // Cek duplikasi: satu peserta hanya bisa mendaftar satu kegiatan yang sama
+        // Cek duplikasi
         $alreadyRegistered = RegistrasiUlang::where('peserta_nik', $peserta->nik)
             ->where('kegiatan_id', $kegiatan->id)
             ->exists();
@@ -71,7 +63,7 @@ Route::post('/daftar-pelatihan', function (Request $request) {
             ], 409);
         }
 
-        // Cek konflik jadwal: peserta tidak boleh mendaftar pelatihan yang tanggalnya overlap
+        // Cek konflik jadwal
         $tanggalMulai = $kegiatan->tanggal_mulai->toDateString();
         $tanggalSelesai = $kegiatan->tanggal_selesai->toDateString();
 
@@ -104,8 +96,8 @@ Route::post('/daftar-pelatihan', function (Request $request) {
             ], 409);
         }
 
-        // Buat registrasi dengan kegiatan_type_id dan tahun otomatis
-        RegistrasiUlang::create([
+        // Buat registrasi
+        $registrasi = RegistrasiUlang::create([
             'peserta_nik' => $peserta->nik,
             'kegiatan_id' => $kegiatan->id,
             'kegiatan_type_id' => $kegiatan->kegiatan_type_id,
@@ -116,6 +108,11 @@ Route::post('/daftar-pelatihan', function (Request $request) {
         return response()->json([
             'success' => true,
             'message' => 'Pendaftaran pelatihan berhasil! Tunggu verifikasi admin.',
+            'data' => [
+                'registrasi_id' => $registrasi->id,
+                'kegiatan' => $kegiatan->nama_pelatihan,
+                'status' => 'pending',
+            ],
         ], 201);
     } catch (\Exception $e) {
         return response()->json([
