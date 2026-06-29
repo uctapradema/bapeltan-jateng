@@ -11,25 +11,37 @@ use Illuminate\Support\Facades\Auth;
 
 class KegiatanTahapanPage extends Page
 {
-    protected static ?string $navigationIcon = 'heroicon-oacademic-cap';
+    protected static ?string $navigationIcon = 'heroicon-o-academic-cap';
     protected static ?string $navigationLabel = 'Pelatihan';
     protected static bool $shouldRegisterNavigation = false;
 
     protected static string $view = 'filament.peserta.pages.kegiatan-tahapan';
 
-    public ?int $kegiatanId = null;
+    public ?string $kegiatanId = null;
     public ?array $kegiatan = null;
     public ?array $tahapans = [];
     public ?int $totalTahapans = 0;
     public ?int $completedTahapans = 0;
     public ?int $persentase = 0;
 
-    public function mount(int $kegiatanId): void
+    protected static string $routePath = 'kegiatan-tahapan';
+
+    public static function getRoutePath(): string
+    {
+        return static::$routePath . '/{kegiatanId}';
+    }
+
+    public function getRouteKeyName(): ?string
+    {
+        return 'kegiatanId';
+    }
+
+    public function mount(int|string $kegiatanId): void
     {
         $user = Auth::user();
         if (!$user->peserta) return;
 
-        $this->kegiatanId = $kegiatanId;
+        $this->kegiatanId = (int) $kegiatanId;
 
         $reg = RegistrasiUlang::where('peserta_nik', $user->peserta->nik)
             ->where('kegiatan_id', $kegiatanId)
