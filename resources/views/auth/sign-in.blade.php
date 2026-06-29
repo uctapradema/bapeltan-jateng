@@ -127,7 +127,9 @@
     <script>
         const loginModal = document.getElementById('loginModal');
         @if($errors->any())
-            loginModal.showModal();
+            document.addEventListener('DOMContentLoaded', function() {
+                loginModal.showModal();
+            });
         @endif
     </script>
 
