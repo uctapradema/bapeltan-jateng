@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::table('registrasi_zilenials', function (Blueprint $table) {
             $table->string('peserta_nik', 16)->after('id');
-            $table->foreignId('kegiatan_id')->after('peserta_nik');
+            $table->uuid('kegiatan_id')->after('peserta_nik');
             $table->year('tahun')->after('kegiatan_id');
             $table->enum('status', ['pending', 'diterima', 'ditolak', 'selesai'])->default('pending')->after('tahun');
             $table->text('catatan')->nullable()->after('status');

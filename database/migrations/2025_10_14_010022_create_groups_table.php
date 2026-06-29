@@ -17,7 +17,7 @@ return new class extends Migration {
             $table->string('group_username')->nullable();
             $table->text('description')->nullable();
             $table->enum('status', ['active', 'inactive'])->default('active');
-            $table->unsignedBigInteger('kegiatan_id')->nullable();
+            $table->uuid('kegiatan_id')->nullable();
             $table->timestamps();
         });
     }

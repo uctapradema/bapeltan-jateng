@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create('pelatihan_tahapans', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('kegiatan_id')->constrained('kegiatans')->cascadeOnDelete();
+            $table->uuid('kegiatan_id')->constrained('kegiatans')->cascadeOnDelete();
             $table->string('nama');
             $table->text('deskripsi')->nullable();
             $table->unsignedSmallInteger('urutan');

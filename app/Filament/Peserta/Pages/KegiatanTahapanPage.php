@@ -2,7 +2,6 @@
 
 namespace App\Filament\Peserta\Pages;
 
-use App\Models\Kegiatan;
 use App\Models\PelatihanTahapan;
 use App\Models\PelatihanTahapanProgress;
 use App\Models\RegistrasiUlang;
@@ -36,12 +35,12 @@ class KegiatanTahapanPage extends Page
         return 'kegiatanId';
     }
 
-    public function mount(int|string $kegiatanId): void
+    public function mount(string $kegiatanId): void
     {
         $user = Auth::user();
         if (!$user->peserta) return;
 
-        $this->kegiatanId = (int) $kegiatanId;
+        $this->kegiatanId = $kegiatanId;
 
         $reg = RegistrasiUlang::where('peserta_nik', $user->peserta->nik)
             ->where('kegiatan_id', $kegiatanId)
@@ -94,14 +93,14 @@ class KegiatanTahapanPage extends Page
             : 0;
     }
 
-    public function selesaikanTahapan(int $tahapanId): void
+    public function selesaikanTahapan(string $tahapanId): void
     {
         $user = Auth::user();
         $peserta = $user->peserta;
         if (!$peserta) return;
 
         $tahapan = PelatihanTahapan::find($tahapanId);
-        if (!$tahapan || ((int) $tahapan->kegiatan_id) !== ((int) $this->kegiatanId)) return;
+        if (!$tahapan || $tahapan->kegiatan_id !== $this->kegiatanId) return;
 
         PelatihanTahapanProgress::updateOrCreate(
             ['tahapan_id' => $tahapanId, 'peserta_nik' => $peserta->nik],

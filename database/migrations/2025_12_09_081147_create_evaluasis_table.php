@@ -12,7 +12,7 @@ return new class extends Migration {
     {
         Schema::create('evaluasis', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('kegiatan_id')->constrained()->cascadeOnDelete();
+            $table->uuid('kegiatan_id')->constrained()->cascadeOnDelete();
             $table->foreignId('evaluasi_type_id')->constrained('evaluasi_types')->cascadeOnDelete();
             $table->string('judul');
             $table->timestamps();

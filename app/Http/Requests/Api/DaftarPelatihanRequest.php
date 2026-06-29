@@ -17,7 +17,7 @@ class DaftarPelatihanRequest extends FormRequest
     {
         return [
             'nik' => 'required|string|size:16|digits:16',
-            'kegiatan_id' => 'required|integer|exists:kegiatans,id',
+            'kegiatan_id' => 'required|string|exists:kegiatans,id',
         ];
     }
 

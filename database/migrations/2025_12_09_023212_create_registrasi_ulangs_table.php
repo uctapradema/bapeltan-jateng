@@ -14,7 +14,7 @@ return new class extends Migration {
             $table->id();
             $table->string('peserta_nik', 16);
 
-            $table->foreignId('kegiatan_id')->constrained()->cascadeOnDelete();
+            $table->uuid('kegiatan_id')->constrained()->cascadeOnDelete();
             $table->foreignId('kegiatan_type_id')->constrained('kegiatan_types')->cascadeOnDelete();
 
             $table->year('tahun');

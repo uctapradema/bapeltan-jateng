@@ -111,7 +111,7 @@ class PesertaDashboard extends Page
             ->toArray();
     }
 
-    public function daftarKegiatan(int $kegiatanId): void
+    public function daftarKegiatan(string $kegiatanId): void
     {
         $user = Auth::user();
         $peserta = $user->peserta;
@@ -204,7 +204,7 @@ class PesertaDashboard extends Page
         return $result;
     }
 
-    public function selesaikanTahapan(int $tahapanId): void
+    public function selesaikanTahapan(string $tahapanId): void
     {
         $user = Auth::user();
         $peserta = $user->peserta;

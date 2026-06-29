@@ -14,6 +14,8 @@ class DatabaseSeeder extends Seeder
             KegiatanTypeSeeder::class,
             KegiatanSeeder::class,
             TestDataSeeder::class,
+            PelatihanTahapanSeeder::class,
+            InitTahapanProgressSeeder::class,
         ]);
     }
 }

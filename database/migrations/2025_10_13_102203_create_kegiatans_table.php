@@ -8,7 +8,7 @@ return new class extends Migration {
     public function up()
     {
         Schema::create('kegiatans', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->string('nama_pelatihan');
             $table->string('kode_pelatihan')->unique();
             $table->date('tanggal_mulai');
@@ -19,7 +19,7 @@ return new class extends Migration {
 
             $table->foreignId('kegiatan_type_id')->constrained('kegiatan_types')->cascadeOnDelete();
 
-            $table->unsignedBigInteger('group_id')->nullable();
+            $table->uuid('group_id')->nullable();
             $table->timestamps();
         });
     }
