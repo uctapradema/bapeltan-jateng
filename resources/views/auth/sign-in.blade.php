@@ -88,11 +88,20 @@
 
             <h2 class="text-center text-xl font-bold mb-4">Silahkan Masuk</h2>
 
+            @if($errors->any())
+                <div class="alert alert-error mb-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <span>{{ $errors->first('name_or_email', 'Username atau password salah.') }}</span>
+                </div>
+            @endif
+
             <form method="POST" action="{{ route('login.perform') }}" class="space-y-4">
                 @csrf
 
-                <input type="text" name="name_or_email" required class="input input-bordered w-full"
-                    placeholder="Nama / Email">
+                <input type="text" name="name_or_email" required class="input input-bordered w-full @error('name_or_email') input-error @enderror"
+                    placeholder="Nama / Email" value="{{ old('name_or_email') }}">
 
                 <input type="password" name="password" required class="input input-bordered w-full"
                     placeholder="Password">
@@ -117,6 +126,9 @@
 
     <script>
         const loginModal = document.getElementById('loginModal');
+        @if($errors->any())
+            loginModal.showModal();
+        @endif
     </script>
 
 </body>

@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Validation\ValidationException;
 
 class SignInController extends Controller
 {
@@ -23,9 +22,9 @@ class SignInController extends Controller
         $field = filter_var($credentials['name_or_email'], FILTER_VALIDATE_EMAIL) ? 'email' : 'name';
 
         if (!Auth::attempt([$field => $credentials['name_or_email'], 'password' => $credentials['password']], $request->boolean('remember'))) {
-            throw ValidationException::withMessages([
-                'name_or_email' => __('auth.failed'),
-            ]);
+            return back()->withErrors([
+                'name_or_email' => 'Username atau password salah.',
+            ])->onlyInput('name_or_email');
         }
 
         $request->session()->regenerate();
