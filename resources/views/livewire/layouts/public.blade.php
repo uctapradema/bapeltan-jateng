@@ -104,7 +104,7 @@
         /* Inputs - Accessible */
         .input-pro {
             width: 100%;
-            padding: 10px 14px;
+            padding: 12px 16px;
             border: 1.5px solid var(--border);
             border-radius: 10px;
             background: #FFFFFF;
@@ -118,11 +118,11 @@
             box-shadow: 0 0 0 3px rgba(3,105,161,0.12);
         }
         .input-pro::placeholder { color: #94A3B8; }
-        .input-pro.has-icon { padding-left: 40px; }
+        .input-pro.has-icon { padding-left: 42px; }
 
         .select-pro {
             width: 100%;
-            padding: 10px 14px;
+            padding: 12px 16px;
             border: 1.5px solid var(--border);
             border-radius: 10px;
             background: #FFFFFF;
@@ -134,8 +134,8 @@
             appearance: none;
             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2394A3B8' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
             background-repeat: no-repeat;
-            background-position: right 12px center;
-            padding-right: 40px;
+            background-position: right 14px center;
+            padding-right: 42px;
         }
         .select-pro:focus {
             border-color: var(--ring);
@@ -144,14 +144,14 @@
 
         .textarea-pro {
             width: 100%;
-            padding: 10px 14px;
+            padding: 12px 16px;
             border: 1.5px solid var(--border);
             border-radius: 10px;
             background: #FFFFFF;
             font-size: 15px;
             color: var(--foreground);
             resize: vertical;
-            min-height: 80px;
+            min-height: 100px;
             transition: border-color 0.2s, box-shadow 0.2s;
             outline: none;
             font-family: inherit;
@@ -164,16 +164,17 @@
         /* Labels */
         .label-pro {
             display: block;
-            margin-bottom: 6px;
-            font-size: 14px;
+            margin-bottom: 8px;
+            font-size: 15px;
             font-weight: 600;
             color: var(--secondary);
+            line-height: 1.4;
         }
         .label-pro .req { color: var(--destructive); margin-left: 2px; }
         .label-pro .opt { color: #94A3B8; font-weight: 400; font-size: 13px; margin-left: 4px; }
         .error-msg {
             display: block;
-            margin-top: 4px;
+            margin-top: 6px;
             font-size: 13px;
             color: var(--destructive);
         }
@@ -184,7 +185,7 @@
         }
         .icon-field .icon-el {
             position: absolute;
-            left: 14px;
+            left: 16px;
             top: 50%;
             transform: translateY(-50%);
             color: #94A3B8;

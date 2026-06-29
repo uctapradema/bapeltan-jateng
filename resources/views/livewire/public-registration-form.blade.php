@@ -16,7 +16,7 @@
             @if($pengaturan && $pengaturan->tanggal_tutup)
             <div class="mt-5 inline-flex items-center gap-2.5 bg-amber-50 text-amber-700 px-5 py-2.5 rounded-xl text-sm font-semibold border border-amber-200">
                 <i class="fas fa-clock" aria-hidden="true"></i>
-                Batas Pendaftaran: {{ \Carbon\Carbon::parse($pengaturan->tanggal_tutup)->translatedFormat('d MMMM Y') }}
+                Batas Pendaftaran: {{ \Carbon\Carbon::parse($pengaturan->tanggal_tutup)->format('d-m-Y') }}
             </div>
             @endif
         </div>
@@ -50,11 +50,11 @@
                             </div>
                         </div>
 
-                        <div class="p-8 lg:p-10">
+                        <div class="p-8 lg:p-12">
 
                             {{-- Syarat --}}
-                            <div class="mb-10 p-5 rounded-xl border" style="background: #EFF6FF; border-color: #BFDBFE;">
-                                <h3 class="font-bold mb-4 flex items-center gap-2.5 text-sm" style="color: #1E40AF">
+                            <div class="mb-12 p-6 rounded-xl border" style="background: #EFF6FF; border-color: #BFDBFE;">
+                                <h3 class="font-bold mb-4 flex items-center gap-2.5" style="color: #1E3A8A">
                                     <span class="w-7 h-7 rounded-lg flex items-center justify-center" style="background: #DBEAFE">
                                         <i class="fas fa-clipboard-check text-xs" aria-hidden="true"></i>
                                     </span>
@@ -75,8 +75,8 @@
                             </div>
 
                             {{-- STEP 1 --}}
-                            <div class="mb-10">
-                                <div class="flex items-center gap-3 mb-7">
+                            <div class="mb-12">
+                                <div class="flex items-center gap-3 mb-8">
                                     <div class="step-num">1</div>
                                     <div>
                                         <h3 class="font-bold" style="color: var(--primary)">DATA PERSONAL</h3>
@@ -85,7 +85,7 @@
                                     <div class="flex-1 h-px ml-2" style="background: linear-gradient(to right, #E2E8F0, transparent)"></div>
                                 </div>
 
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-x-7 gap-y-6">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-7">
 
                                     {{-- Kabupaten --}}
                                     <div x-data="searchableSelect()">
@@ -185,8 +185,8 @@
                             </div>
 
                             {{-- STEP 2 --}}
-                            <div class="mb-10">
-                                <div class="flex items-center gap-3 mb-7">
+                            <div class="mb-12">
+                                <div class="flex items-center gap-3 mb-8">
                                     <div class="step-num">2</div>
                                     <div>
                                         <h3 class="font-bold" style="color: var(--primary)">DATA TAMBAHAN</h3>
@@ -195,7 +195,7 @@
                                     <div class="flex-1 h-px ml-2" style="background: linear-gradient(to right, #E2E8F0, transparent)"></div>
                                 </div>
 
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-x-7 gap-y-6">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-7">
                                     <div>
                                         <label class="label-pro" for="agama">Agama <span class="req">*</span></label>
                                         <select wire:model="agama" id="agama" class="select-pro">
@@ -270,8 +270,8 @@
                             </div>
 
                             {{-- STEP 3 --}}
-                            <div class="mb-10">
-                                <div class="flex items-center gap-3 mb-7">
+                            <div class="mb-12">
+                                <div class="flex items-center gap-3 mb-8">
                                     <div class="step-num">3</div>
                                     <div>
                                         <h3 class="font-bold" style="color: var(--primary)">ALAMAT & KELEMBAGAAN</h3>
@@ -280,7 +280,7 @@
                                     <div class="flex-1 h-px ml-2" style="background: linear-gradient(to right, #E2E8F0, transparent)"></div>
                                 </div>
 
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-x-7 gap-y-6">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-7">
                                     <div class="md:col-span-2">
                                         <label class="label-pro" for="alamat_lengkap">Alamat Lengkap <span class="req">*</span></label>
                                         <div class="icon-field">
@@ -320,8 +320,8 @@
                             </div>
 
                             {{-- STEP 4 --}}
-                            <div class="mb-10">
-                                <div class="flex items-center gap-3 mb-7">
+                            <div class="mb-12">
+                                <div class="flex items-center gap-3 mb-8">
                                     <div class="step-num">4</div>
                                     <div>
                                         <h3 class="font-bold" style="color: var(--primary)">AKUN LOGIN</h3>
@@ -330,7 +330,7 @@
                                     <div class="flex-1 h-px ml-2" style="background: linear-gradient(to right, #E2E8F0, transparent)"></div>
                                 </div>
 
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-x-7 gap-y-6">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-7">
                                     <div>
                                         <label class="label-pro" for="password">Password <span class="req">*</span></label>
                                         <div class="icon-field">
@@ -351,7 +351,7 @@
                             </div>
 
                             {{-- Submit --}}
-                            <div class="flex flex-col items-center gap-4 pt-7 border-t" style="border-color: #E2E8F0">
+                            <div class="flex flex-col items-center gap-4 pt-8 border-t" style="border-color: #E2E8F0">
                                 <button type="submit" class="btn-cta">
                                     <i class="fas fa-paper-plane" aria-hidden="true"></i>
                                     KIRIM PENDAFTARAN
