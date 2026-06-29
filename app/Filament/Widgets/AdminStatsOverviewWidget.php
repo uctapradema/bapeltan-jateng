@@ -8,7 +8,7 @@ use App\Models\RegistrasiUlang;
 use Filament\Widgets\StatsOverviewWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 
-class StatsOverviewWidget extends StatsOverviewWidget
+class AdminStatsOverviewWidget extends StatsOverviewWidget
 {
     protected static ?int $sort = 0;
 

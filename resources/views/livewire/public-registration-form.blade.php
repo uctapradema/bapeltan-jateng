@@ -1,5 +1,5 @@
 <div>
-    <div class="max-w-6xl mx-auto">
+    <div class="max-w-4xl mx-auto px-4">
         <!-- Header Information -->
         <div class="text-center mb-8">
             <h1 class="text-3xl font-bold text-gray-900 mb-2">
