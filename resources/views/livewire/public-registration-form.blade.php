@@ -71,8 +71,8 @@
                             </label>
                             <select wire:model="kabupaten_id" id="kabupaten_id" class="select select-bordered w-full">
                                 <option value="">-- Pilih Kabupaten --</option>
-                                @foreach(\App\Models\Kabupaten::orderBy('nama_kabupaten')->get() as $kab)
-                                    <option value="{{ $kab->id }}">{{ $kab->nama_kabupaten }}</option>
+                                @foreach(\App\Models\Kabupaten::orderBy('nama')->get() as $kab)
+                                    <option value="{{ $kab->id }}">{{ $kab->nama }}</option>
                                 @endforeach
                             </select>
                             @error('kabupaten_id') <span class="label-text-alt text-error">{{ $message }}</span> @enderror
