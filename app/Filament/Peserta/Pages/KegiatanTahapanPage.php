@@ -51,7 +51,7 @@ class KegiatanTahapanPage extends Page
 
         if (!$reg) {
             session()->flash('danger', 'Anda tidak terdaftar di kegiatan ini.');
-            redirect()->route('filament.peserta.pages.peserta-dashboard');
+            $this->redirect(route('filament.peserta.pages.peserta-dashboard'));
             return;
         }
 
@@ -101,7 +101,7 @@ class KegiatanTahapanPage extends Page
         if (!$peserta) return;
 
         $tahapan = PelatihanTahapan::find($tahapanId);
-        if (!$tahapan || $tahapan->kegiatan_id !== $this->kegiatanId) return;
+        if (!$tahapan || ((int) $tahapan->kegiatan_id) !== ((int) $this->kegiatanId)) return;
 
         PelatihanTahapanProgress::updateOrCreate(
             ['tahapan_id' => $tahapanId, 'peserta_nik' => $peserta->nik],
@@ -124,6 +124,6 @@ class KegiatanTahapanPage extends Page
         }
 
         session()->flash('success', "Tahapan \"{$tahapan->nama}\" berhasil diselesaikan!");
-        redirect()->route('filament.peserta.pages.kegiatan-tahapan', ['kegiatanId' => $this->kegiatanId]);
+        $this->redirect(route('filament.peserta.pages.kegiatan-tahapan-page', ['kegiatanId' => $this->kegiatanId]));
     }
 }
