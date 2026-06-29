@@ -13,7 +13,7 @@
             <p class="text-lg text-gray-500 max-w-2xl mx-auto">
                 {{ $pengaturan->sub_judul ?? '' }}
             </p>
-            @if($pengaturan->tanggal_tutup)
+            @if($pengaturan && $pengaturan->tanggal_tutup)
             <div class="mt-4 inline-flex items-center gap-2 bg-amber-50 text-amber-700 px-4 py-2 rounded-xl text-sm font-semibold border border-amber-200">
                 <i class="fas fa-clock"></i>
                 Batas Pendaftaran: {{ \Carbon\Carbon::parse($pengaturan->tanggal_tutup)->translatedFormat('d MMMM Y') }}
