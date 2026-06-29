@@ -10,10 +10,6 @@
     @vite('resources/css/app.css')
     @livewireStyles
 
-    <!-- Filament Forms CSS -->
-    <link rel="stylesheet" href="{{ asset('css/filament/support/support.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/filament/forms/forms.css') }}">
-
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
@@ -54,62 +50,6 @@
             padding: 1rem;
             border-radius: 8px;
             margin-bottom: 1rem;
-        }
-
-        /* Override Filament Forms dark theme */
-        .fi-fo form,
-        .fi-section,
-        .fi-section-content {
-            background: white !important;
-            color: #1a1a1a !important;
-        }
-
-        .fi-section-header {
-            background: #1e40af !important;
-            color: white !important;
-        }
-
-        .fi-section-header-text {
-            color: white !important;
-        }
-
-        .fi-fo-field-wrp-label,
-        .fi-fo-field-wrp-input label {
-            color: #374151 !important;
-        }
-
-        .fi-input,
-        .fi-fo-input-wrp-input,
-        input[type="text"],
-        input[type="email"],
-        input[type="password"],
-        input[type="tel"],
-        select,
-        textarea {
-            background: white !important;
-            color: #1a1a1a !important;
-            border-color: #d1d5db !important;
-        }
-
-        .fi-input:focus,
-        select:focus,
-        textarea:focus {
-            border-color: #3b82f6 !important;
-            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2) !important;
-        }
-
-        .fi-section-description {
-            color: #6b7280 !important;
-        }
-
-        .fi-fo-field-wrp {
-            background: white !important;
-        }
-
-        /* Fix form alignment */
-        .fi-fo form > .grid,
-        .fi-section > .fi-section-content {
-            max-width: 100% !important;
         }
     </style>
 </head>

@@ -1,176 +1,146 @@
 <?php
-// app/Livewire/PublicRegistrationForm.php
 
 namespace App\Livewire;
 
 use App\Models\Kabupaten;
 use App\Models\Pengaturan;
 use App\Models\Peserta;
-use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\Textarea;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Concerns\InteractsWithForms;
-use Filament\Forms\Contracts\HasForms;
-use Filament\Forms\Form;
-use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 
-class PublicRegistrationForm extends Component implements HasForms
+class PublicRegistrationForm extends Component
 {
-    use InteractsWithForms;
-
-    public array $kabupatenOptions = [];
     public $pengaturan;
-    public ?array $data = [];
 
-    public function mount(): void
+    // Data Personal
+    public $kabupaten_id = '';
+    public $nik = '';
+    public $nama = '';
+    public $tempat_lahir = '';
+    public $tanggal_lahir = '';
+    public $nomor_telepon = '';
+    public $password = '';
+    public $password_confirmation = '';
+
+    // Data Tambahan
+    public $agama = '';
+    public $jenis_kelamin = '';
+    public $status_pernikahan = '';
+    public $pendidikan_terakhir = '';
+    public $pekerjaan = '';
+    public $usaha_tani = '';
+
+    // Alamat dan Kontak
+    public $alamat_lengkap = '';
+    public $nama_poktan = '';
+    public $alamat_poktan = '';
+    public $nip = '';
+    public $email = '';
+
+    protected $rules = [
+        'kabupaten_id' => 'required|exists:kabupatens,id',
+        'nik' => 'required|size:16|digits:16|unique:pesertas,nik',
+        'nama' => 'required|string|max:255',
+        'tempat_lahir' => 'required|string|max:255',
+        'tanggal_lahir' => 'required|date',
+        'nomor_telepon' => 'required|string|max:15',
+        'password' => 'required|min:6|confirmed',
+        'agama' => 'required',
+        'jenis_kelamin' => 'required',
+        'status_pernikahan' => 'required',
+        'pendidikan_terakhir' => 'required',
+        'pekerjaan' => 'required|string|max:255',
+        'usaha_tani' => 'required|string|max:255',
+        'alamat_lengkap' => 'required|string',
+        'nama_poktan' => 'required|string|max:255',
+        'alamat_poktan' => 'required|string',
+        'email' => 'required|email|max:255',
+    ];
+
+    protected $messages = [
+        'nik.required' => 'NIK wajib diisi.',
+        'nik.size' => 'NIK harus tepat 16 digit.',
+        'nik.digits' => 'NIK harus berupa angka.',
+        'nik.unique' => 'NIK ini sudah terdaftar.',
+        'kabupaten_id.required' => 'Kabupaten wajib dipilih.',
+        'nama.required' => 'Nama lengkap wajib diisi.',
+        'tanggal_lahir.required' => 'Tanggal lahir wajib diisi.',
+        'password.required' => 'Password wajib diisi.',
+        'password.min' => 'Password minimal 6 karakter.',
+        'password.confirmed' => 'Konfirmasi password tidak cocok.',
+        'agama.required' => 'Agama wajib dipilih.',
+        'jenis_kelamin.required' => 'Jenis kelamin wajib dipilih.',
+        'status_pernikahan.required' => 'Status pernikahan wajib dipilih.',
+        'pendidikan_terakhir.required' => 'Pendidikan terakhir wajib dipilih.',
+        'email.required' => 'Email wajib diisi.',
+        'email.email' => 'Format email tidak valid.',
+    ];
+
+    public function mount()
     {
-        $this->kabupatenOptions = Kabupaten::pluck('nama', 'id')->toArray();
-        $this->form->fill();
         $this->pengaturan = Pengaturan::first();
     }
 
-    public function form(Form $form): Form
+    public function updatedNama()
     {
-        return $form
-            ->schema([
-                // Section 1: Data Personal
-                \Filament\Forms\Components\Section::make('Data Personal')
-                    ->schema([
-                        Select::make('kabupaten_id')
-                            ->live()
-                            ->label('Kabupaten')
-                            ->options($this->kabupatenOptions)
-                            ->required(),
-
-                        TextInput::make('nik')
-                            ->label('NIK')
-                            ->required()
-                            ->length(16)
-                            ->unique('pesertas', 'nik')
-                            ->validationMessages([
-                                'unique' => 'NIK ini sudah terdaftar. Silakan gunakan NIK lain atau hubungi admin.',
-                            ]),
-
-                        TextInput::make('nama')
-                            ->label('Nama Lengkap')
-                            ->required()
-                            ->maxLength(255)
-                            ->afterStateUpdated(fn($state, $set) => $set('nama', strtoupper($state))),
-
-                        TextInput::make('tempat_lahir')->label('Tempat Lahir')->required(),
-
-                        DatePicker::make('tanggal_lahir')
-                            ->label('Tanggal Lahir')
-                            ->required()
-                            ->maxDate(now()->subYears(18))
-                            ->validationMessages(['max' => 'Usia minimal 18 tahun.']),
-
-                        TextInput::make('nomor_telepon')
-                            ->label('Nomor Telepon')
-                            ->required()
-                            ->tel()
-                            ->maxLength(15),                        
-
-                        TextInput::make('password')
-                            ->label('Password')
-                            ->password()
-                            ->required()
-                            ->minLength(6)
-                            ->same('password_confirmation'),
-
-                        TextInput::make('password_confirmation')
-                            ->label('Konfirmasi Password')
-                            ->password()
-                            ->required(),
-                    ])->columns(2),
-
-                // Section 2: Data Tambahan
-                \Filament\Forms\Components\Section::make('Data Tambahan')
-                    ->schema([
-                        Select::make('agama')->label('Agama')->options([
-                            'ISLAM'=>'ISLAM','KRISTEN'=>'KRISTEN','KATOLIK'=>'KATOLIK',
-                            'HINDU'=>'HINDU','BUDDHA'=>'BUDDHA','KONGHUCU'=>'KONGHUCU'
-                        ])->required(),
-
-                        Select::make('jenis_kelamin')->label('Jenis Kelamin')->options([
-                            'LAKI-LAKI'=>'LAKI-LAKI','PEREMPUAN'=>'PEREMPUAN'
-                        ])->required(),
-
-                        Select::make('status_pernikahan')->label('Status Pernikahan')->options([
-                            'BELUM MENIKAH'=>'BELUM MENIKAH','MENIKAH'=>'MENIKAH',
-                            'CERAI HIDUP'=>'CERAI HIDUP','CERAI MATI'=>'CERAI MATI'
-                        ])->required(),
-
-                        Select::make('pendidikan_terakhir')->label('Pendidikan Terakhir')->options([
-                            'SD'=>'SD','SMP'=>'SMP','SMA'=>'SMA','D1'=>'D1','D2'=>'D2','D3'=>'D3',
-                            'S1'=>'S1','S2'=>'S2','S3'=>'S3'
-                        ])->required(),
-
-                        TextInput::make('pekerjaan')->label('Pekerjaan')->required(),
-                        TextInput::make('usaha_tani')->label('Usaha Tani')->required(),
-                    ])->columns(3),
-
-                // Section 3: Alamat dan Kontak
-                \Filament\Forms\Components\Section::make('Alamat dan Kontak')
-                    ->schema([
-                        Textarea::make('alamat_lengkap')
-                            ->label('Alamat Lengkap (Sesuai Identitas Kependudukan)')
-                            ->required()
-                            ->placeholder('Contoh: RT.001 RW.002 DS. GEDAWANG, KEC. SEMAMPIR, KAB. TEMANGGUNG')
-                            ->columnSpanFull(),
-
-                        TextInput::make('nama_poktan')->label('Nama Poktan/Organisasi/Departemen')->required(),
-                        Textarea::make('alamat_poktan')->label('Alamat Poktan/Organisasi/Departemen')->required()->columnSpanFull(),
-                        TextInput::make('nip')->label('NIP (Opsional bagi Aparatur)')->nullable(),
-                        TextInput::make('email')->label('Alamat Email')->email()->required(),
-                    ])->columns(2),
-            ])
-            ->statePath('data');
+        $this->nama = strtoupper($this->nama);
     }
 
-    /**
-     * Simpan biodata peserta saja
-     */
-    public function create(): void
+    public function create()
     {
+        $this->validate();
+
+        $usia = now()->diffInYears($this->tanggal_lahir);
+        if ($usia < 18) {
+            session()->flash('error', 'Usia minimal 18 tahun.');
+            return;
+        }
+        if ($usia > 50) {
+            session()->flash('error', 'Usia maksimal 50 tahun.');
+            return;
+        }
+
         try {
-            DB::transaction(function () {
-                $data = $this->form->getState();
+            $peserta = Peserta::updateOrCreate(
+                ['nik' => $this->nik],
+                [
+                    'kabupaten_id' => $this->kabupaten_id,
+                    'nik' => $this->nik,
+                    'nama' => strtoupper($this->nama),
+                    'tempat_lahir' => $this->tempat_lahir,
+                    'tanggal_lahir' => $this->tanggal_lahir,
+                    'nomor_telepon' => $this->nomor_telepon,
+                    'agama' => $this->agama,
+                    'jenis_kelamin' => $this->jenis_kelamin,
+                    'status_pernikahan' => $this->status_pernikahan,
+                    'pendidikan_terakhir' => $this->pendidikan_terakhir,
+                    'pekerjaan' => $this->pekerjaan,
+                    'usaha_tani' => $this->usaha_tani,
+                    'alamat_lengkap' => $this->alamat_lengkap,
+                    'nama_poktan' => $this->nama_poktan,
+                    'alamat_poktan' => $this->alamat_poktan,
+                    'nip' => $this->nip ?: null,
+                    'email' => $this->email,
+                ]
+            );
 
-                $data['nama'] = strtoupper($data['nama']);
-                $usia = now()->diffInYears($data['tanggal_lahir']);
-                if ($usia > 50) {
-                    throw new \Exception('Usia peserta melebihi batas maksimal 50 tahun.');
-                }
+            if (!$peserta->user_id) {
+                $user = \App\Models\User::create([
+                    'name' => strtoupper($this->nama),
+                    'email' => $this->email,
+                    'password' => \Illuminate\Support\Facades\Hash::make($this->password),
+                    'role' => 'peserta',
+                    'email_verified_at' => now(),
+                ]);
+                $peserta->user_id = $user->id;
+                $peserta->save();
+            }
 
-                $peserta = Peserta::updateOrCreate(
-                    ['nik' => $data['nik']],
-                    $data
-                );
-
-                if (!$peserta->user_id) {
-                    $user = \App\Models\User::create([
-                        'name' => $data['nama'],
-                        'email' => $data['email'],
-                        'password' => \Illuminate\Support\Facades\Hash::make($data['password']),
-                        'role' => 'peserta',
-                        'email_verified_at' => now(),
-                    ]);
-
-                    $peserta->user_id = $user->id;
-                    $peserta->save();
-                }
-
-                session()->flash('success', 'Biodata dan akun berhasil dibuat! Silakan login.');
-                $this->form->fill();
-            });
+            session()->flash('success', 'Biodata dan akun berhasil dibuat! Silakan login.');
+            $this->reset();
         } catch (\Exception $e) {
-            session()->flash('error', 'Terjadi kesalahan saat menyimpan biodata: ' . $e->getMessage());
+            session()->flash('error', 'Terjadi kesalahan: ' . $e->getMessage());
         }
     }
-
 
     public function render()
     {
