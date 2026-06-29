@@ -13,6 +13,7 @@ class Kegiatan extends Model
     use HasFactory;
 
     protected $fillable = [
+        'kegiatan_type_id',
         'nama_pelatihan',
         'kode_pelatihan',
         'tanggal_mulai',
@@ -61,5 +62,10 @@ class Kegiatan extends Model
     public function group()
     {
         return $this->belongsTo(Group::class);
+    }
+
+    public function tahapans()
+    {
+        return $this->hasMany(PelatihanTahapan::class);
     }
 }

@@ -5,6 +5,8 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\RegistrasiUlangResource\Pages;
 use App\Filament\Resources\RegistrasiUlangResource\RelationManagers;
 use App\Models\RegistrasiUlang;
+use App\Models\PelatihanTahapan;
+use App\Models\PelatihanTahapanProgress;
 use App\Notifications\RegistrationStatusNotification;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -101,6 +103,14 @@ class RegistrasiUlangResource extends Resource
                         $record->peserta->user->notify(
                             new RegistrationStatusNotification($record, $oldStatus, 'diterima')
                         );
+                        $firstTahapan = PelatihanTahapan::where('kegiatan_id', $record->kegiatan_id)->where('urutan', 1)->first();
+                        if ($firstTahapan && !PelatihanTahapanProgress::where('tahapan_id', $firstTahapan->id)->where('peserta_nik', $record->peserta_nik)->exists()) {
+                            PelatihanTahapanProgress::create([
+                                'tahapan_id' => $firstTahapan->id,
+                                'peserta_nik' => $record->peserta_nik,
+                                'status' => 'active',
+                            ]);
+                        }
                     })
                     ->requiresConfirmation()
                     ->color('success')

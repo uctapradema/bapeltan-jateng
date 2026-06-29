@@ -7,7 +7,7 @@
                 <i class="fas fa-graduation-cap" aria-hidden="true"></i>
                 Pendaftaran {{ date('Y') }}
             </div>
-            <h1 class="text-3xl lg:text-4xl font-extrabold tracking-tight leading-tight mb-4" style="color: var(--primary)">
+            <h1 class="text-3xl lg:text-4xl font-extrabold tracking-tight leading-tight mb-4" style="color: var(--primary); font-family: 'Lexend', sans-serif">
                 {{ $pengaturan->judul ?? 'FORMULIR PENDAFTARAN' }}
             </h1>
             <p class="text-lg max-w-2xl mx-auto leading-relaxed" style="color: #64748B">
@@ -45,8 +45,8 @@
                         <div class="section-hdr">
                             <div class="icon-box"><i class="fas fa-user-plus" aria-hidden="true"></i></div>
                             <div>
-                                <h2 class="text-lg font-bold">FORMULIR PENDAFTARAN</h2>
-                                <p class="text-slate-300 text-sm mt-0.5">Lengkapi semua data dengan benar</p>
+                                <h2 class="text-lg font-bold" style="font-family: 'Lexend', sans-serif">FORMULIR PENDAFTARAN</h2>
+                                <p class="text-sky-200 text-sm mt-0.5">Lengkapi semua data dengan benar</p>
                             </div>
                         </div>
 
@@ -79,7 +79,7 @@
                                 <div class="flex items-center gap-3 mb-8">
                                     <div class="step-num">1</div>
                                     <div>
-                                        <h3 class="font-bold" style="color: var(--primary)">DATA PERSONAL</h3>
+                                        <h3 class="font-bold" style="color: var(--primary); font-family: 'Lexend', sans-serif">DATA PERSONAL</h3>
                                         <p class="text-sm" style="color: #94A3B8">Identitas diri peserta</p>
                                     </div>
                                     <div class="flex-1 h-px ml-2" style="background: linear-gradient(to right, #E2E8F0, transparent)"></div>
@@ -90,6 +90,8 @@
                                     {{-- Kabupaten --}}
                                     <div x-data="searchableSelect()">
                                         <label class="label-pro">Kabupaten / Kota <span class="req">*</span></label>
+                                        {{-- Hidden input sebagai jembatan wire:model --}}
+                                        <input type="hidden" wire:model="kabupaten_id" x-ref="kabHidden" />
                                         <div class="relative">
                                             <input type="text" class="input-pro" style="padding-right: 40px"
                                                 placeholder="Ketik nama kabupaten..."
@@ -99,7 +101,7 @@
                                                 autocomplete="off"
                                                 aria-label="Cari kabupaten" />
                                             <i class="fas fa-search absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none" style="color: #94A3B8" aria-hidden="true"></i>
-                                            <div x-show="open &amp;&amp; filtered.length > 0"
+                                            <div x-show="open && filtered.length > 0"
                                                 x-transition
                                                 class="absolute z-50 w-full mt-1.5 bg-white border rounded-xl shadow-xl max-h-64 overflow-y-auto"
                                                 style="border-color: #E2E8F0"
@@ -109,7 +111,13 @@
                                                         style="border-color: #F1F5F9"
                                                         :class="{ 'font-semibold': selectedId == item.id }"
                                                         :style="selectedId == item.id ? 'background: #EFF6FF; color: #0369A1' : ''"
-                                                        @click="select(item)"
+                                                        @mousedown.prevent="
+                                                            selectedId = item.id;
+                                                            query = item.nama;
+                                                            open = false;
+                                                            $refs.kabHidden.value = item.id;
+                                                            $refs.kabHidden.dispatchEvent(new Event('input'));
+                                                        "
                                                         role="option"
                                                         :aria-selected="selectedId == item.id">
                                                         <span x-text="item.nama" class="text-sm"></span>
@@ -117,7 +125,6 @@
                                                 </template>
                                             </div>
                                         </div>
-                                        <input type="hidden" wire:model="kabupaten_id" :value="selectedId" />
                                         @error('kabupaten_id') <span class="error-msg">{{ $message }}</span> @enderror
                                     </div>
 
@@ -189,7 +196,7 @@
                                 <div class="flex items-center gap-3 mb-8">
                                     <div class="step-num">2</div>
                                     <div>
-                                        <h3 class="font-bold" style="color: var(--primary)">DATA TAMBAHAN</h3>
+                                        <h3 class="font-bold" style="color: var(--primary); font-family: 'Lexend', sans-serif">DATA TAMBAHAN</h3>
                                         <p class="text-sm" style="color: #94A3B8">Informasi pendukung</p>
                                     </div>
                                     <div class="flex-1 h-px ml-2" style="background: linear-gradient(to right, #E2E8F0, transparent)"></div>
@@ -274,7 +281,7 @@
                                 <div class="flex items-center gap-3 mb-8">
                                     <div class="step-num">3</div>
                                     <div>
-                                        <h3 class="font-bold" style="color: var(--primary)">ALAMAT & KELEMBAGAAN</h3>
+                                        <h3 class="font-bold" style="color: var(--primary); font-family: 'Lexend', sans-serif">ALAMAT & KELEMBAGAAN</h3>
                                         <p class="text-sm" style="color: #94A3B8">Domisili dan keanggotaan poktan</p>
                                     </div>
                                     <div class="flex-1 h-px ml-2" style="background: linear-gradient(to right, #E2E8F0, transparent)"></div>
@@ -324,7 +331,7 @@
                                 <div class="flex items-center gap-3 mb-8">
                                     <div class="step-num">4</div>
                                     <div>
-                                        <h3 class="font-bold" style="color: var(--primary)">AKUN LOGIN</h3>
+                                        <h3 class="font-bold" style="color: var(--primary); font-family: 'Lexend', sans-serif">AKUN LOGIN</h3>
                                         <p class="text-sm" style="color: #94A3B8">Buat akun untuk masuk panel peserta</p>
                                     </div>
                                     <div class="flex-1 h-px ml-2" style="background: linear-gradient(to right, #E2E8F0, transparent)"></div>
@@ -373,7 +380,7 @@
                     <div class="section-hdr" style="background: linear-gradient(135deg, #7F1D1D, #991B1B)">
                         <div class="icon-box"><i class="fas fa-search" aria-hidden="true"></i></div>
                         <div>
-                            <h2 class="text-base font-bold">CEK NIK</h2>
+                            <h2 class="text-base font-bold" style="font-family: 'Lexend', sans-serif">CEK NIK</h2>
                             <p class="text-red-200/80 text-xs mt-0.5">Periksa data keikutsertaan</p>
                         </div>
                     </div>
@@ -557,18 +564,18 @@
         }
 
         function searchableSelect() {
+            const items = @json(\App\Models\Kabupaten::orderBy('nama')->get(['id','nama']));
+            const initId = @json($kabupaten_id ?: null);
+            const initItem = initId ? items.find(i => i.id == initId) : null;
             return {
-                open: false, query: '', selectedId: '',
-                items: [
-                    @foreach(\App\Models\Kabupaten::orderBy('nama')->get() as $kab)
-                        { id: {{ $kab->id }}, nama: '{{ $kab->nama }}' },
-                    @endforeach
-                ],
+                open: false,
+                query: initItem ? initItem.nama : '',
+                selectedId: initItem ? initItem.id : '',
+                items,
                 get filtered() {
                     if (!this.query) return this.items;
                     return this.items.filter(i => i.nama.toLowerCase().includes(this.query.toLowerCase()));
-                },
-                select(item) { this.selectedId = item.id; this.query = item.nama; this.open = false; }
+                }
             }
         }
     </script>

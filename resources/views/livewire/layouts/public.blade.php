@@ -13,19 +13,24 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&family=Source+Sans+3:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
         * { box-sizing: border-box; }
         body {
-            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-family: 'Source Sans 3', -apple-system, BlinkMacSystemFont, sans-serif;
             background: #F8FAFC;
             color: #020617;
+            font-size: 16px;
+            line-height: 1.6;
             -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
         }
 
-        /* Design Token Variables */
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Lexend', sans-serif;
+        }
+
+        /* Design Tokens - Government Accessible & Ethical */
         :root {
             --primary: #0F172A;
             --on-primary: #FFFFFF;
@@ -35,16 +40,17 @@
             --background: #F8FAFC;
             --foreground: #020617;
             --muted: #E8ECF1;
-            --border: #E2E8F0;
+            --border: #CBD5E1;
             --destructive: #DC2626;
             --ring: #0369A1;
             --success: #059669;
             --warning: #D97706;
+            --radius: 12px;
         }
 
-        /* Hero */
+        /* Hero - Government Gradient */
         .hero-bg {
-            background: linear-gradient(135deg, #0F172A 0%, #1E293B 60%, #0F172A 100%);
+            background: linear-gradient(135deg, #0F172A 0%, #1E293B 50%, #0F4C75 100%);
             position: relative;
             overflow: hidden;
         }
@@ -52,33 +58,35 @@
             content: '';
             position: absolute;
             top: 0; right: 0; bottom: 0; left: 0;
-            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23334155' fill-opacity='0.15'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-            opacity: 0.5;
+            background:
+                radial-gradient(circle at 20% 80%, rgba(3,105,161,0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(3,105,161,0.1) 0%, transparent 50%);
         }
 
-        /* Cards */
+        /* Cards - Clean Government Style */
         .card-pro {
             background: #FFFFFF;
             border: 1px solid var(--border);
-            border-radius: 16px;
+            border-radius: var(--radius);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06);
             transition: box-shadow 0.2s ease;
         }
         .card-pro:hover {
-            box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
         }
 
-        /* Section Header */
+        /* Section Header - Navy Blue */
         .section-hdr {
             display: flex;
             align-items: center;
-            gap: 14px;
-            padding: 18px 28px;
+            gap: 16px;
+            padding: 20px 28px;
             background: var(--primary);
             color: white;
-            border-radius: 16px 16px 0 0;
+            border-radius: var(--radius) var(--radius) 0 0;
         }
         .section-hdr .icon-box {
-            width: 40px; height: 40px;
+            width: 44px; height: 44px;
             border-radius: 10px;
             background: rgba(255,255,255,0.15);
             display: flex;
@@ -92,41 +100,45 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            width: 32px; height: 32px;
+            width: 36px; height: 36px;
             border-radius: 50%;
             background: var(--accent);
             color: white;
-            font-size: 14px;
+            font-size: 15px;
             font-weight: 700;
             flex-shrink: 0;
+            font-family: 'Lexend', sans-serif;
         }
 
-        /* Inputs - Accessible */
+        /* Inputs - Accessible (44px touch target) */
         .input-pro {
             width: 100%;
-            padding: 12px 16px;
+            height: 48px;
+            padding: 0 16px;
             border: 1.5px solid var(--border);
             border-radius: 10px;
             background: #FFFFFF;
-            font-size: 15px;
+            font-size: 16px;
             color: var(--foreground);
             transition: border-color 0.2s, box-shadow 0.2s;
             outline: none;
+            font-family: 'Source Sans 3', sans-serif;
         }
         .input-pro:focus {
             border-color: var(--ring);
-            box-shadow: 0 0 0 3px rgba(3,105,161,0.12);
+            box-shadow: 0 0 0 3px rgba(3,105,161,0.15);
         }
         .input-pro::placeholder { color: #94A3B8; }
-        .input-pro.has-icon { padding-left: 42px; }
+        .input-pro.has-icon { padding-left: 44px; }
 
         .select-pro {
             width: 100%;
-            padding: 12px 16px;
+            height: 48px;
+            padding: 0 16px;
             border: 1.5px solid var(--border);
             border-radius: 10px;
             background: #FFFFFF;
-            font-size: 15px;
+            font-size: 16px;
             color: var(--foreground);
             transition: border-color 0.2s, box-shadow 0.2s;
             outline: none;
@@ -135,30 +147,32 @@
             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2394A3B8' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
             background-repeat: no-repeat;
             background-position: right 14px center;
-            padding-right: 42px;
+            padding-right: 44px;
+            font-family: 'Source Sans 3', sans-serif;
         }
         .select-pro:focus {
             border-color: var(--ring);
-            box-shadow: 0 0 0 3px rgba(3,105,161,0.12);
+            box-shadow: 0 0 0 3px rgba(3,105,161,0.15);
         }
 
         .textarea-pro {
             width: 100%;
-            padding: 12px 16px;
+            padding: 14px 16px;
             border: 1.5px solid var(--border);
             border-radius: 10px;
             background: #FFFFFF;
-            font-size: 15px;
+            font-size: 16px;
             color: var(--foreground);
             resize: vertical;
             min-height: 100px;
             transition: border-color 0.2s, box-shadow 0.2s;
             outline: none;
-            font-family: inherit;
+            font-family: 'Source Sans 3', sans-serif;
+            line-height: 1.6;
         }
         .textarea-pro:focus {
             border-color: var(--ring);
-            box-shadow: 0 0 0 3px rgba(3,105,161,0.12);
+            box-shadow: 0 0 0 3px rgba(3,105,161,0.15);
         }
 
         /* Labels */
@@ -168,14 +182,14 @@
             font-size: 15px;
             font-weight: 600;
             color: var(--secondary);
-            line-height: 1.4;
+            line-height: 1.5;
         }
         .label-pro .req { color: var(--destructive); margin-left: 2px; }
-        .label-pro .opt { color: #94A3B8; font-weight: 400; font-size: 13px; margin-left: 4px; }
+        .label-pro .opt { color: #94A3B8; font-weight: 400; font-size: 14px; margin-left: 4px; }
         .error-msg {
             display: block;
             margin-top: 6px;
-            font-size: 13px;
+            font-size: 14px;
             color: var(--destructive);
         }
 
@@ -189,17 +203,18 @@
             top: 50%;
             transform: translateY(-50%);
             color: #94A3B8;
-            font-size: 14px;
+            font-size: 15px;
             pointer-events: none;
         }
 
-        /* CTA */
+        /* CTA Button - High Contrast */
         .btn-cta {
             display: inline-flex;
             align-items: center;
             justify-content: center;
             gap: 10px;
-            padding: 14px 48px;
+            height: 52px;
+            padding: 0 48px;
             background: var(--accent);
             color: white;
             border: none;
@@ -208,11 +223,11 @@
             font-weight: 700;
             cursor: pointer;
             transition: all 0.2s ease;
-            font-family: inherit;
+            font-family: 'Lexend', sans-serif;
+            letter-spacing: 0.02em;
         }
         .btn-cta:hover {
             background: var(--accent-hover);
-            transform: translateY(-1px);
             box-shadow: 0 4px 16px rgba(3,105,161,0.3);
         }
         .btn-cta:active { transform: translateY(0); }
@@ -226,16 +241,17 @@
             align-items: center;
             justify-content: center;
             gap: 8px;
-            padding: 10px 20px;
+            height: 44px;
+            padding: 0 20px;
             background: transparent;
             color: var(--accent);
             border: 1.5px solid var(--accent);
             border-radius: 10px;
-            font-size: 14px;
+            font-size: 15px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.2s ease;
-            font-family: inherit;
+            font-family: 'Source Sans 3', sans-serif;
         }
         .btn-outline:hover {
             background: var(--accent);
@@ -252,17 +268,6 @@
             color: white;
         }
 
-        /* Animations */
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .anim-in { animation: fadeInUp 0.5s ease forwards; }
-        .d1 { animation-delay: 0.1s; opacity: 0; }
-        .d2 { animation-delay: 0.2s; opacity: 0; }
-        .d3 { animation-delay: 0.3s; opacity: 0; }
-        .d4 { animation-delay: 0.4s; opacity: 0; }
-
         /* Focus visible for accessibility */
         a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
             outline: 3px solid var(--ring);
@@ -276,7 +281,7 @@
             left: 16px;
             background: var(--accent);
             color: white;
-            padding: 8px 16px;
+            padding: 10px 20px;
             border-radius: 8px;
             z-index: 100;
             font-weight: 600;
@@ -289,7 +294,7 @@
 </head>
 
 <body class="min-h-screen flex flex-col">
-    <!-- Skip Link (Accessibility) -->
+    <!-- Skip Link -->
     <a href="#main-content" class="skip-link">Langsung ke konten utama</a>
 
     <!-- Header -->
@@ -305,9 +310,9 @@
                     </a>
                 </div>
                 <div class="text-right">
-                    <h1 class="text-xl lg:text-2xl font-bold tracking-tight leading-tight">BALAI PELATIHAN PERTANIAN</h1>
-                    <p class="text-slate-300 text-sm lg:text-base font-medium mt-0.5">Provinsi Jawa Tengah</p>
-                    <a href="/" class="inline-flex items-center gap-2 mt-3 text-xs lg:text-sm text-slate-300 hover:text-white transition-colors bg-white/10 hover:bg-white/20 px-4 py-2 rounded-xl">
+                    <h1 class="text-xl lg:text-2xl font-bold tracking-tight leading-tight" style="font-family: 'Lexend', sans-serif">BALAI PELATIHAN PERTANIAN</h1>
+                    <p class="text-sky-200 text-sm lg:text-base font-medium mt-0.5">Provinsi Jawa Tengah</p>
+                    <a href="/" class="inline-flex items-center gap-2 mt-3 text-xs lg:text-sm text-sky-100 hover:text-white transition-colors bg-white/10 hover:bg-white/20 px-4 py-2 rounded-xl">
                         <i class="fas fa-arrow-left text-[10px]"></i>
                         Kembali ke Beranda
                     </a>
@@ -331,7 +336,7 @@
         <div class="container mx-auto px-6 lg:px-8 py-12">
             <div class="grid md:grid-cols-3 gap-10 lg:gap-16">
                 <div>
-                    <h3 class="text-base font-bold mb-5 flex items-center gap-2.5">
+                    <h3 class="text-base font-bold mb-5 flex items-center gap-2.5" style="font-family: 'Lexend', sans-serif">
                         <i class="fas fa-building text-sky-400"></i>
                         Kontak Kami
                     </h3>
@@ -351,7 +356,7 @@
                     </div>
                 </div>
                 <div>
-                    <h3 class="text-base font-bold mb-5 flex items-center gap-2.5">
+                    <h3 class="text-base font-bold mb-5 flex items-center gap-2.5" style="font-family: 'Lexend', sans-serif">
                         <i class="fas fa-link text-sky-400" aria-hidden="true"></i>
                         Tautan
                     </h3>
@@ -362,7 +367,7 @@
                     </ul>
                 </div>
                 <div>
-                    <h3 class="text-base font-bold mb-5 flex items-center gap-2.5">
+                    <h3 class="text-base font-bold mb-5 flex items-center gap-2.5" style="font-family: 'Lexend', sans-serif">
                         <i class="fas fa-share-alt text-sky-400" aria-hidden="true"></i>
                         Ikuti Kami
                     </h3>

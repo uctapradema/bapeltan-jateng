@@ -3,7 +3,6 @@
 namespace App\Filament\Peserta\Resources;
 
 use App\Filament\Peserta\Resources\RegistrasiUlangResource\Pages;
-use App\Models\Kegiatan;
 use App\Models\RegistrasiUlang;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -27,78 +26,30 @@ class RegistrasiUlangResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('nama_pelatihan')->label('Nama Kegiatan'),
-                Tables\Columns\TextColumn::make('tanggal_mulai')->label('Tanggal Mulai')->date(),
-                Tables\Columns\TextColumn::make('tanggal_selesai')->label('Tanggal Selesai')->date(),
+                Tables\Columns\TextColumn::make('kegiatan.nama_pelatihan')->label('Nama Kegiatan')->searchable(),
+                Tables\Columns\TextColumn::make('kegiatan.kode_pelatihan')->label('Kode')->searchable(),
+                Tables\Columns\TextColumn::make('kegiatan.tanggal_mulai')->label('Mulai')->date(),
+                Tables\Columns\TextColumn::make('kegiatan.tanggal_selesai')->label('Selesai')->date(),
                 Tables\Columns\BadgeColumn::make('status')
                     ->label('Status')
-                    ->getStateUsing(function ($record) {
-                        if (isset($record->registrasiUlangs) && $record->registrasiUlangs->isNotEmpty()) {
-                            return $record->registrasiUlangs->first()->status;
-                        }
-                        return 'belum_daftar';
-                    })
-                    ->formatStateUsing(function ($state) {
-                        return match ($state) {
-                            'pending' => 'Pending',
-                            'diterima' => 'Diterima',
-                            'ditolak' => 'Ditolak',
-                            'belum_daftar' => 'Belum Daftar',
-                            default => $state,
-                        };
+                    ->formatStateUsing(fn ($state) => match ($state) {
+                        'pending' => 'Pending',
+                        'diterima' => 'Diterima',
+                        'ditolak' => 'Ditolak',
+                        'selesai' => 'Selesai',
+                        default => $state,
                     })
                     ->colors([
                         'warning' => 'pending',
                         'success' => 'diterima',
-                        'danger'  => 'ditolak',
-                        'primary' => 'belum_daftar',
+                        'danger' => 'ditolak',
+                        'primary' => 'selesai',
                     ]),
+                Tables\Columns\TextColumn::make('created_at')->label('Tanggal Daftar')->date(),
             ])
+            ->defaultSort('created_at', 'desc')
             ->filters([])
-            ->actions([
-                Tables\Actions\Action::make('Daftar')
-                    ->label('Daftar')
-                    ->icon('heroicon-o-plus')
-                    ->requiresConfirmation()
-                    ->action(function ($record) {
-                        $user = Auth::user();
-                        if (!$user || !$user->peserta) return;
-
-                        $pesertaNik = $user->peserta->nik;
-
-                        $exists = RegistrasiUlang::where('peserta_nik', $pesertaNik)
-                            ->where('kegiatan_id', $record->id)
-                            ->exists();
-
-                        if ($exists) {
-                            \Filament\Notifications\Notification::make()
-                                ->title('Anda sudah mendaftar kegiatan ini.')
-                                ->warning()
-                                ->send();
-                            return;
-                        }
-
-                        RegistrasiUlang::create([
-                            'peserta_nik' => $pesertaNik,
-                            'kegiatan_id' => $record->id,
-                            'status' => 'pending',
-                        ]);
-
-                        \Filament\Notifications\Notification::make()
-                            ->title('Pendaftaran berhasil dikirim.')
-                            ->success()
-                            ->send();
-                    })
-                    ->visible(function ($record) {
-                        $user = Auth::user();
-                        if (!$user || !$user->peserta) return false;
-                        $pesertaNik = $user->peserta->nik;
-
-                        return !RegistrasiUlang::where('peserta_nik', $pesertaNik)
-                            ->where('kegiatan_id', $record->id)
-                            ->exists();
-                    }),
-            ])
+            ->actions([])
             ->bulkActions([]);
     }
 
@@ -106,14 +57,12 @@ class RegistrasiUlangResource extends Resource
     {
         $user = Auth::user();
         if (!$user || !$user->peserta) {
-            return Kegiatan::query()->whereRaw('0 = 1');
+            return RegistrasiUlang::query()->whereRaw('0 = 1');
         }
 
-        $pesertaNik = $user->peserta->nik;
-
-        return Kegiatan::query()->with(['registrasiUlangs' => function ($q) use ($pesertaNik) {
-            $q->where('peserta_nik', $pesertaNik);
-        }]);
+        return RegistrasiUlang::query()
+            ->with('kegiatan')
+            ->where('peserta_nik', $user->peserta->nik);
     }
 
     public static function getRelations(): array

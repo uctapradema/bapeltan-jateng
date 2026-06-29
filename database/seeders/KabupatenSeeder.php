@@ -40,8 +40,7 @@ class KabupatenSeeder extends Seeder
             ['kode' => 'SRK', 'nama' => 'SRAGEN'],
             ['kode' => 'WNG', 'nama' => 'WONOGIRI'],
             ['kode' => 'KRW', 'nama' => 'KARANGANYAR'],
-            ['kode' => 'SMG', 'nama' => 'SALATIGA'],
-            ['kode' => 'SKT', 'nama' => 'SUKOHARJO'],
+            ['kode' => 'SLT', 'nama' => 'SALATIGA'],
         ];
 
         foreach ($kabupatens as $kabupaten) {
