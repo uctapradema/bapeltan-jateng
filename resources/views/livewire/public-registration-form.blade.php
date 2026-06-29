@@ -65,16 +65,33 @@
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         {{-- Kabupaten --}}
-                        <div class="form-control">
+                        <div class="form-control" x-data="searchableSelect()">
                             <label class="label" for="kabupaten_id">
                                 <span class="label-text font-semibold">Kabupaten <span class="text-red-500">*</span></span>
                             </label>
-                            <select wire:model="kabupaten_id" id="kabupaten_id" class="select select-bordered w-full">
-                                <option value="">-- Pilih Kabupaten --</option>
-                                @foreach(\App\Models\Kabupaten::orderBy('nama')->get() as $kab)
-                                    <option value="{{ $kab->id }}">{{ $kab->nama }}</option>
-                                @endforeach
-                            </select>
+                            <div class="relative">
+                                <input type="text"
+                                    class="input input-bordered w-full pr-10"
+                                    placeholder="Ketik untuk mencari kabupaten..."
+                                    x-model="query"
+                                    @focus="open = true"
+                                    @click.outside="open = false"
+                                    autocomplete="off" />
+                                <i class="fas fa-search absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"></i>
+
+                                <div x-show="open && filtered.length > 0"
+                                    x-transition
+                                    class="absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto">
+                                    <template x-for="item in filtered" :key="item.id">
+                                        <div class="px-4 py-2 cursor-pointer hover:bg-blue-100 text-sm"
+                                            :class="{ 'bg-blue-50': selectedId == item.id }"
+                                            @click="select(item)">
+                                            <span x-text="item.nama"></span>
+                                        </div>
+                                    </template>
+                                </div>
+                            </div>
+                            <input type="hidden" wire:model="kabupaten_id" :value="selectedId" />
                             @error('kabupaten_id') <span class="label-text-alt text-error">{{ $message }}</span> @enderror
                         </div>
 
@@ -550,6 +567,30 @@
                         this.notif_error = "Terjadi kesalahan saat mendaftar pelatihan.";
                         console.error(e);
                     }
+                }
+            }
+        }
+    </script>
+
+    <script>
+        function searchableSelect() {
+            return {
+                open: false,
+                query: '',
+                selectedId: '',
+                items: [
+                    @foreach(\App\Models\Kabupaten::orderBy('nama')->get() as $kab)
+                        { id: {{ $kab->id }}, nama: '{{ $kab->nama }}' },
+                    @endforeach
+                ],
+                get filtered() {
+                    if (!this.query) return this.items;
+                    return this.items.filter(i => i.nama.toLowerCase().includes(this.query.toLowerCase()));
+                },
+                select(item) {
+                    this.selectedId = item.id;
+                    this.query = item.nama;
+                    this.open = false;
                 }
             }
         }
