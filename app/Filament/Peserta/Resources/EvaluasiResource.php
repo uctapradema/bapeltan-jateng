@@ -18,6 +18,11 @@ class EvaluasiResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-document-check';
     protected static ?string $navigationLabel = 'Evaluasi';
 
+    public static function shouldRegisterNavigation(): bool
+    {
+        return false;
+    }
+
     // Form kosong
     public static function form(Form $form): Form
     {

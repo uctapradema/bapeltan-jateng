@@ -2,6 +2,7 @@
 
 namespace App\Filament\Peserta\Resources;
 
+use App\Filament\Peserta\Pages\KegiatanTahapanPage;
 use App\Filament\Peserta\Resources\RegistrasiUlangResource\Pages;
 use App\Models\RegistrasiUlang;
 use Filament\Forms\Form;
@@ -49,7 +50,14 @@ class RegistrasiUlangResource extends Resource
             ])
             ->defaultSort('created_at', 'desc')
             ->filters([])
-            ->actions([])
+            ->actions([
+                Tables\Actions\Action::make('lihat_tahapan')
+                    ->label('Lihat Tahapan')
+                    ->icon('heroicon-o-academic-cap')
+                    ->color('primary')
+                    ->url(fn ($record) => KegiatanTahapanPage::getUrl(['kegiatanId' => $record->kegiatan_id]))
+                    ->visible(fn ($record) => $record->status === 'diterima'),
+            ])
             ->bulkActions([]);
     }
 

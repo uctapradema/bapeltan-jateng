@@ -21,6 +21,11 @@ class GroupResource extends Resource
     protected static ?string $modelLabel = 'Group';
     protected static ?string $pluralModelLabel = 'Group';
 
+    public static function shouldRegisterNavigation(): bool
+    {
+        return false;
+    }
+
     public static function form(Form $form): Form
     {
         return $form->schema([]);

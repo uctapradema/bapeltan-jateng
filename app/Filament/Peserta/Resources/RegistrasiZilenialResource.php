@@ -21,6 +21,11 @@ class RegistrasiZilenialResource extends Resource
     protected static ?string $navigationGroup = 'Registrasi';
     protected static ?string $navigationLabel = 'Registrasi Zilenial';
 
+    public static function shouldRegisterNavigation(): bool
+    {
+        return false;
+    }
+
     public static function form(Form $form): Form
     {
         return $form
