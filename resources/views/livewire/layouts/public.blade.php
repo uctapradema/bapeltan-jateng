@@ -55,6 +55,62 @@
             border-radius: 8px;
             margin-bottom: 1rem;
         }
+
+        /* Override Filament Forms dark theme */
+        .fi-fo form,
+        .fi-section,
+        .fi-section-content {
+            background: white !important;
+            color: #1a1a1a !important;
+        }
+
+        .fi-section-header {
+            background: #1e40af !important;
+            color: white !important;
+        }
+
+        .fi-section-header-text {
+            color: white !important;
+        }
+
+        .fi-fo-field-wrp-label,
+        .fi-fo-field-wrp-input label {
+            color: #374151 !important;
+        }
+
+        .fi-input,
+        .fi-fo-input-wrp-input,
+        input[type="text"],
+        input[type="email"],
+        input[type="password"],
+        input[type="tel"],
+        select,
+        textarea {
+            background: white !important;
+            color: #1a1a1a !important;
+            border-color: #d1d5db !important;
+        }
+
+        .fi-input:focus,
+        select:focus,
+        textarea:focus {
+            border-color: #3b82f6 !important;
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2) !important;
+        }
+
+        .fi-section-description {
+            color: #6b7280 !important;
+        }
+
+        .fi-fo-field-wrp {
+            background: white !important;
+        }
+
+        /* Fix form alignment */
+        .fi-fo form > .grid,
+        .fi-section > .fi-section-content {
+            max-width: 100% !important;
+        }
     </style>
 </head>
 
@@ -74,6 +130,9 @@
                 <div class="text-right">
                     <h1 class="text-2xl font-bold">BALAI PELATIHAN PERTANIAN</h1>
                     <p class="text-blue-200">Jawa Tengah</p>
+                    <a href="/" class="text-sm text-blue-100 hover:text-white underline mt-1 inline-block">
+                        &larr; Kembali ke Beranda
+                    </a>
                 </div>
             </div>
         </div>
