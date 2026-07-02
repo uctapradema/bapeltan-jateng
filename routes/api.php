@@ -3,6 +3,7 @@
 use App\Http\Requests\Api\CekNikRequest;
 use App\Http\Requests\Api\DaftarPelatihanRequest;
 use App\Http\Resources\PesertaResource;
+use App\Models\Artikel;
 use App\Models\Peserta;
 use App\Models\Kegiatan;
 use App\Models\RegistrasiUlang;
@@ -121,3 +122,47 @@ Route::post('/daftar-pelatihan', function (DaftarPelatihanRequest $request) {
         ], 500);
     }
 })->middleware('throttle:10,1');
+
+// API untuk daftar kegiatan aktif ============================
+Route::get('/kegiatan', function () {
+    $kegiatans = Kegiatan::with('kegiatanType')
+        ->where('status', 'active')
+        ->orderBy('tanggal_mulai')
+        ->get()
+        ->map(fn ($k) => [
+            'id' => $k->id,
+            'nama' => $k->nama_pelatihan,
+            'kode' => $k->kode_pelatihan,
+            'tipe' => $k->kegiatanType->nama_type ?? '-',
+            'mulai' => $k->tanggal_mulai->format('d-m-Y'),
+            'selesai' => $k->tanggal_selesai->format('d-m-Y'),
+            'kuota' => $k->kuota,
+            'kuota_tersedia' => $k->kuota_tersedia,
+            'deskripsi' => $k->deskripsi,
+        ]);
+
+    return response()->json([
+        'success' => true,
+        'data' => $kegiatans,
+    ]);
+})->middleware('throttle:30,1');
+
+// API untuk daftar artikel ============================
+Route::get('/artikel', function () {
+    $artikels = Artikel::published()
+        ->orderBy('urutan')
+        ->get()
+        ->map(fn ($a) => [
+            'id' => $a->id,
+            'judul' => $a->judul,
+            'slug' => $a->slug,
+            'ringkasan' => $a->ringkasan,
+            'penulis' => $a->penulis,
+            'created_at' => $a->created_at->format('d-m-Y'),
+        ]);
+
+    return response()->json([
+        'success' => true,
+        'data' => $artikels,
+    ]);
+})->middleware('throttle:30,1');

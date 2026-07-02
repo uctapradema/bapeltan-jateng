@@ -10,7 +10,7 @@
 | **Nama Produk** | Sistem Informasi Manajemen Pelatihan Bapeltan Jateng |
 | **Versi Dokumen** | 1.3 |
 | **Tanggal** | 2 Juli 2026 |
-| **Status** | In Progress (Phase 3 Selesai, Phase 4 Pending) |
+| **Status** | In Progress (Phase 4 Selesai) |
 | **Author** | Tim Pengembang |
 
 ---
@@ -1252,19 +1252,20 @@ bapeltan/
 
 ---
 
-### Phase 4 — Fitur Lanjutan (Minggu 9-12)
+### Phase 4 — Fitur Lanjutan (Minggu 9-12) ✅ SELESAI
 
-| # | Task | Priority | Estimasi |
-|---|------|----------|----------|
-| 4.1 | Riwayat Pelatihan: halaman untuk peserta | P2 | 2 hari |
-| 4.2 | Monitoring Evaluasi: dashboard hasil evaluasi | P2 | 3 hari |
-| 4.3 | Laporan: peserta per kabupaten, per jenis | P2 | 3 hari |
-| 4.4 | Email Notification: status registrasi | P3 | 2 hari |
-| 4.5 | REST API public untuk integrasi | P3 | 3 hari |
-| 4.6 | Testing: unit test dan feature test | P1 | 3 hari |
-| 4.7 | Deployment: setup production server | P1 | 2 hari |
+| # | Task | Priority | Estimasi | Status | Keterangan |
+|---|------|----------|----------|--------|------------|
+| 4.1 | Sertifikat Digital: template + generate PDF | P2 | 3 hari | ✅ Selesai | `CertificateController` + DomPDF + template A4 landscape |
+| 4.2 | Riwayat Pelatihan: halaman untuk peserta | P2 | 2 hari | ✅ Selesai | `RiwayatPelatihanPage` dengan progress bar per kegiatan |
+| 4.3 | Monitoring Evaluasi: dashboard hasil evaluasi | P2 | 3 hari | ✅ Selesai | `EvaluasiResponseResource` — lihat jawaban per peserta |
+| 4.4 | Laporan: peserta per kabupaten, per jenis | P2 | 3 hari | ✅ Selesai | `LaporanPage` — statistik, bar chart, status registrasi |
+| 4.5 | Email Notification: status registrasi | P3 | 2 hari | ✅ Selesai | Sudah ada di `RegistrationStatusNotification` |
+| 4.6 | REST API public untuk integrasi | P3 | 3 hari | ✅ Selesai | + `/api/kegiatan` dan `/api/artikel` endpoints |
+| 4.7 | Testing: unit test dan feature test | P1 | 3 hari | ✅ Selesai | 13 tests — Auth, API, Kegiatan model |
+| 4.8 | Deployment: setup production server | P1 | 2 hari | ⏳ Belum | Perlu setup server production |
 
-**Deliverable**: Sistem siap production.
+**Deliverable**: Sistem siap production (kecuali deployment). ✅
 
 ---
 
