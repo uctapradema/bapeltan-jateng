@@ -8,9 +8,9 @@
 | Field | Value |
 |-------|-------|
 | **Nama Produk** | Sistem Informasi Manajemen Pelatihan Bapeltan Jateng |
-| **Versi Dokumen** | 1.2 |
-| **Tanggal** | 29 Juni 2026 |
-| **Status** | In Progress (Phase 2 Selesai) |
+| **Versi Dokumen** | 1.3 |
+| **Tanggal** | 2 Juli 2026 |
+| **Status** | In Progress (Phase 2 + Tahapan Selesai, Phase 3 Pending) |
 | **Author** | Tim Pengembang |
 
 ---
@@ -145,9 +145,11 @@ Sistem ini mencakup:
 | **UI Component** | DaisyUI | 5.x |
 | **JavaScript** | Alpine.js | (bawaan Livewire) |
 | **Build Tool** | Vite | 7.x |
-| **Database (Dev)** | SQLite | - |
-| **Database (Prod)** | MySQL / MariaDB | 8.x / 10.x |
+| **Database (Dev)** | MySQL 8.x (XAMPP) |
+| **Database (Prod)** | MySQL 8.x / MariaDB 10.x |
 | **PHP** | PHP | 8.2+ |
+
+> **Note**: Semua tabel menggunakan **UUID primary key** (kecuali `pesertas` yang menggunakan `nik` sebagai PK). Session driver menggunakan file (bukan database) karena UUID primary key.
 
 ### 4.2 Arsitektur Aplikasi
 
@@ -179,7 +181,6 @@ Sistem ini mencakup:
 │  ┌──────────────────────┼─────────────────────┐    │
 │  │         Controllers / Livewire             │    │
 │  │  SignInController │ PublicRegistrationForm  │    │
-│  │                   │ PublicTrainingRegistration│   │
 │  └──────────────────────┼─────────────────────┘    │
 │                         │                            │
 │  ┌──────────────────────┼─────────────────────┐    │
@@ -197,7 +198,7 @@ Sistem ini mencakup:
                          ▼
 ┌─────────────────────────────────────────────────────┐
 │                   DATABASE                          │
-│           SQLite (dev) / MySQL (prod)                │
+│           MySQL 8.x (XAMPP)                         │
 │                                                      │
 │  users │ pesertas │ kegiatans │ registrasi_ulangs   │
 │  evaluasi* │ groups │ kabupatens │ pengaturans      │
@@ -215,7 +216,12 @@ bapeltan/
 │   │   ├── Peserta/                          # Panel Peserta
 │   │   │   ├── Pages/
 │   │   │   │   ├── PesertaDashboard.php
-│   │   │   │   └── TakeEvaluasi.php
+│   │   │   │   ├── TakeEvaluasi.php
+│   │   │   │   ├── RegistrasiUlangPage.php   # Halaman "Bersedia"
+│   │   │   │   ├── TahapanListPage.php       # Daftar kegiatan + progress bar
+│   │   │   │   ├── KegiatanTahapanPage.php   # Timeline tahapan
+│   │   │   │   ├── TahapanDetailPage.php     # Form pertanyaan per tahapan
+│   │   │   │   └── VideoPelatihanPage.php    # YouTube embed
 │   │   │   └── Resources/
 │   │   │       ├── EvaluasiResource.php
 │   │   │       ├── GroupResource.php
@@ -227,6 +233,7 @@ bapeltan/
 │   │       ├── GroupResource.php
 │   │       ├── KabupatenResource.php
 │   │       ├── KegiatanResource.php
+│   │       ├── PelatihanTahapanResource.php  # Admin CRUD tahapan
 │   │       ├── PesertaResource.php
 │   │       ├── RegistrasiUlangResource.php
 │   │       └── RegistrasiZilenialResource.php
@@ -238,8 +245,7 @@ bapeltan/
 │   │       ├── Admin.php
 │   │       └── Peserta.php
 │   ├── Livewire/
-│   │   ├── PublicRegistrationForm.php
-│   │   └── PublicTrainingRegistration.php
+│   │   └── PublicRegistrationForm.php
 │   ├── Models/
 │   │   ├── Evaluasi.php
 │   │   ├── EvaluasiQuestion.php
@@ -250,11 +256,16 @@ bapeltan/
 │   │   ├── Kabupaten.php
 │   │   ├── Kegiatan.php
 │   │   ├── KegiatanType.php
+│   │   ├── PelatihanTahapan.php
+│   │   ├── PelatihanTahapanProgress.php
+│   │   ├── PelatihanTahapanQuestion.php
 │   │   ├── Pengaturan.php
 │   │   ├── Peserta.php
 │   │   ├── RegistrasiUlang.php
 │   │   ├── RegistrasiZilenial.php
 │   │   └── User.php
+│   ├── Services/
+│   │   └── TahapanProgressService.php        # Shared tahapan completion logic
 │   └── Providers/
 │       ├── AppServiceProvider.php
 │       └── Filament/
@@ -262,13 +273,14 @@ bapeltan/
 │           └── PesertaPanelProvider.php
 ├── database/
 │   ├── factories/
-│   ├── migrations/                           # 16 migration files
+│   ├── migrations/                           # 20+ migration files (UUID)
 │   └── seeders/
 │       ├── DatabaseSeeder.php
 │       ├── KabupatenSeeder.php
-│       ├── KegiatanSeeder.php
 │       ├── KegiatanTypeSeeder.php
-│       └── UserSeeder.php
+│       ├── PelatihanTahapanSeeder.php
+│       ├── TahapanQuestionsSeeder.php
+│       └── TestDataSeeder.php
 ├── resources/
 │   ├── css/
 │   │   └── app.css
@@ -393,6 +405,19 @@ bapeltan/
 │ fasilitas (JSON) │
 │ timestamps        │
 └──────────────────┘
+
+┌──────────────────────┐  ┌──────────────────────┐  ┌──────────────────────┐
+│ pelatihan_tahapans   │  │pelatihan_tahapan_pro │  │pelatihan_tahapan_ques│
+├──────────────────────┤  ├──────────────────────┤  ├──────────────────────┤
+│ id (PK)             │◄─│ tahapan_id (FK)      │◄─│ tahapan_id (FK)     │
+│ kegiatan_id (FK)    │  │ peserta_nik (FK)     │  │ pertanyaan           │
+│ nama                │  │ status (ENUM)        │  │ tipe (ENUM)          │
+│ tipe (ENUM)         │  │ jawaban (JSON)       │  │ opsi (JSON)          │
+│ urutan              │  │ completed_at         │  │ wajib (BOOLEAN)      │
+│ deskripsi           │  │ timestamps           │  │ urutan               │
+│ is_required         │  └──────────────────────┘  │ timestamps           │
+│ timestamps          │                            └──────────────────────┘
+└──────────────────────┘
 ```
 
 ### 5.2 Detail Tabel
@@ -401,7 +426,7 @@ bapeltan/
 
 | Kolom | Tipe | Constraint | Keterangan |
 |-------|------|------------|------------|
-| id | bigint | PK, auto-increment | ID user |
+| id | uuid | PK | ID user |
 | name | varchar(255) | required | Nama lengkap |
 | email | varchar(255) | unique, required | Email untuk login |
 | role | enum('admin','peserta') | required | Role pengguna |
@@ -416,7 +441,7 @@ bapeltan/
 | Kolom | Tipe | Constraint | Keterangan |
 |-------|------|------------|------------|
 | nik | varchar(16) | PK | Nomor Induk Kependudukan |
-| user_id | bigint | FK → users.id, nullable, nullOnDelete | ID user terkait |
+| user_id | uuid | FK → users.id, nullable, nullOnDelete | ID user terkait |
 | nama | varchar(255) | required | Nama lengkap |
 | tempat_lahir | varchar(255) | required | Tempat lahir |
 | tanggal_lahir | date | required | Tanggal lahir |
@@ -432,7 +457,7 @@ bapeltan/
 | alamat_poktan | varchar(255) | required | Alamat kelompok tani |
 | nip | varchar(18) | nullable | NIP (jika ada) |
 | email | varchar(255) | nullable | Email peserta |
-| kabupaten_id | bigint | FK → kabupatens.id | ID kabupaten |
+| kabupaten_id | uuid | FK → kabupatens.id | ID kabupaten |
 | created_at | timestamp | auto | Waktu pendaftaran |
 | updated_at | timestamp | auto | Waktu update terakhir |
 
@@ -440,9 +465,9 @@ bapeltan/
 
 | Kolom | Tipe | Constraint | Keterangan |
 |-------|------|------------|------------|
-| id | bigint | PK, auto-increment | ID kabupaten |
-| code | varchar(10) | unique | Kode wilayah |
-| name | varchar(255) | required | Nama kabupaten |
+| id | uuid | PK | ID kabupaten |
+| kode | varchar(10) | unique | Kode wilayah |
+| nama | varchar(255) | required | Nama kabupaten |
 | created_at | timestamp | auto | - |
 | updated_at | timestamp | auto | - |
 
@@ -450,7 +475,7 @@ bapeltan/
 
 | Kolom | Tipe | Constraint | Keterangan |
 |-------|------|------------|------------|
-| id | bigint | PK, auto-increment | ID jenis kegiatan |
+| id | uuid | PK | ID jenis kegiatan |
 | nama_type | varchar(255) | required | Nama jenis pelatihan |
 | created_at | timestamp | auto | - |
 | updated_at | timestamp | auto | - |
@@ -459,7 +484,7 @@ bapeltan/
 
 | Kolom | Tipe | Constraint | Keterangan |
 |-------|------|------------|------------|
-| id | bigint | PK, auto-increment | ID kegiatan |
+| id | uuid | PK | ID kegiatan |
 | nama_pelatihan | varchar(255) | required | Nama pelatihan |
 | kode_pelatihan | varchar(50) | unique, required | Kode unik pelatihan |
 | tanggal_mulai | date | required | Tanggal mulai |
@@ -467,8 +492,9 @@ bapeltan/
 | kuota | integer | required | Jumlah kuota peserta |
 | status | enum('active','inactive') | default: 'active' | Status kegiatan |
 | deskripsi | text | nullable | Deskripsi pelatihan |
-| kegiatan_type_id | bigint | FK → kegiatan_types.id | Jenis kegiatan |
-| group_id | bigint | FK → groups.id, nullable | Grup terkait |
+| video_url | varchar(255) | nullable | Link YouTube video pelatihan |
+| kegiatan_type_id | uuid | FK → kegiatan_types.id | Jenis kegiatan |
+| group_id | uuid | FK → groups.id, nullable | Grup terkait |
 | created_at | timestamp | auto | - |
 | updated_at | timestamp | auto | - |
 
@@ -476,13 +502,13 @@ bapeltan/
 
 | Kolom | Tipe | Constraint | Keterangan |
 |-------|------|------------|------------|
-| id | bigint | PK, auto-increment | ID group |
+| id | uuid | PK | ID group |
 | name | varchar(255) | required | Nama grup |
 | group_link | varchar(255) | unique | Link undangan grup WA |
 | group_username | varchar(255) | nullable | Username grup |
 | description | text | nullable | Deskripsi grup |
 | status | enum('active','inactive') | default: 'active' | Status grup |
-| kegiatan_id | bigint | FK → kegiatans.id | Kegiatan terkait |
+| kegiatan_id | uuid | FK → kegiatans.id | Kegiatan terkait |
 | created_at | timestamp | auto | - |
 | updated_at | timestamp | auto | - |
 
@@ -490,21 +516,23 @@ bapeltan/
 
 | Kolom | Tipe | Constraint | Keterangan |
 |-------|------|------------|------------|
-| id | bigint | PK, auto-increment | ID registrasi |
+| id | uuid | PK | ID registrasi |
 | peserta_nik | varchar(16) | FK → pesertas.nik | NIK peserta |
-| kegiatan_id | bigint | FK → kegiatans.id | Kegiatan yang dipilih |
-| status | enum('pending','diterima','ditolak','selesai') | default: 'pending' | Status registrasi |
+| kegiatan_id | uuid | FK → kegiatans.id | Kegiatan yang dipilih |
+| status | enum('pending','diterima','ditolak','bersedia','selesai') | default: 'pending' | Status registrasi |
 | catatan | text | nullable | Catatan admin |
 | created_at | timestamp | auto | Waktu pendaftaran |
 | updated_at | timestamp | auto | Waktu update terakhir |
 
 **Unique Constraint**: `(peserta_nik, kegiatan_type_id, tahun)` — satu peserta hanya bisa mendaftar satu jenis kegiatan per tahun.
 
+**Status Workflow**: `pending` → `diterima` / `ditolak` → `bersedia` (peserta konfirmasi) → `selesai`
+
 #### 5.2.8 `registrasi_zilenials`
 
 | Kolom | Tipe | Constraint | Keterangan |
 |-------|------|------------|------------|
-| id | bigint | PK, auto-increment | ID |
+| id | uuid | PK | ID |
 | created_at | timestamp | auto | - |
 | updated_at | timestamp | auto | - |
 
@@ -514,7 +542,7 @@ bapeltan/
 
 | Kolom | Tipe | Constraint | Keterangan |
 |-------|------|------------|------------|
-| id | bigint | PK, auto-increment | ID tipe evaluasi |
+| id | uuid | PK | ID tipe evaluasi |
 | nama | varchar(255) | required | Nama tipe (Pre-Test, Post-Test, dll) |
 | deskripsi | text | nullable | Deskripsi tipe |
 | created_at | timestamp | auto | - |
@@ -524,9 +552,9 @@ bapeltan/
 
 | Kolom | Tipe | Constraint | Keterangan |
 |-------|------|------------|------------|
-| id | bigint | PK, auto-increment | ID evaluasi |
-| kegiatan_id | bigint | FK → kegiatans.id | Kegiatan terkait |
-| evaluasi_type_id | bigint | FK → evaluasi_types.id | Tipe evaluasi |
+| id | uuid | PK | ID evaluasi |
+| kegiatan_id | uuid | FK → kegiatans.id | Kegiatan terkait |
+| evaluasi_type_id | uuid | FK → evaluasi_types.id | Tipe evaluasi |
 | judul | varchar(255) | required | Judul evaluasi |
 | created_at | timestamp | auto | - |
 | updated_at | timestamp | auto | - |
@@ -535,8 +563,8 @@ bapeltan/
 
 | Kolom | Tipe | Constraint | Keterangan |
 |-------|------|------------|------------|
-| id | bigint | PK, auto-increment | ID pertanyaan |
-| evaluasi_id | bigint | FK → evaluasis.id | Evaluasi terkait |
+| id | uuid | PK | ID pertanyaan |
+| evaluasi_id | uuid | FK → evaluasis.id | Evaluasi terkait |
 | pertanyaan | text | required | Teks pertanyaan |
 | tipe_jawaban | varchar(50) | default: 'text' | Tipe: radio, checkbox, scale, text |
 | urutan | integer | nullable | Urutan pertanyaan |
@@ -547,8 +575,8 @@ bapeltan/
 
 | Kolom | Tipe | Constraint | Keterangan |
 |-------|------|------------|------------|
-| id | bigint | PK, auto-increment | ID opsi |
-| evaluasi_question_id | bigint | FK → evaluasi_questions.id | Pertanyaan terkait |
+| id | uuid | PK | ID opsi |
+| evaluasi_question_id | uuid | FK → evaluasi_questions.id | Pertanyaan terkait |
 | value | varchar(255) | required | Teks opsi jawaban |
 | is_correct | boolean | default: false | Apakah ini jawaban benar |
 | created_at | timestamp | auto | - |
@@ -558,10 +586,10 @@ bapeltan/
 
 | Kolom | Tipe | Constraint | Keterangan |
 |-------|------|------------|------------|
-| id | bigint | PK, auto-increment | ID jawaban |
-| evaluasi_id | bigint | FK → evaluasis.id | Evaluasi terkait |
-| question_id | bigint | FK → evaluasi_questions.id | Pertanyaan terkait |
-| registrasi_ulang_id | bigint | FK → registrasi_ulangs.id | Registrasi peserta |
+| id | uuid | PK | ID jawaban |
+| evaluasi_id | uuid | FK → evaluasis.id | Evaluasi terkait |
+| question_id | uuid | FK → evaluasi_questions.id | Pertanyaan terkait |
+| registrasi_ulang_id | uuid | FK → registrasi_ulangs.id | Registrasi peserta |
 | jawaban | text | nullable | Jawaban peserta |
 | created_at | timestamp | auto | - |
 | updated_at | timestamp | auto | - |
@@ -570,7 +598,7 @@ bapeltan/
 
 | Kolom | Tipe | Constraint | Keterangan |
 |-------|------|------------|------------|
-| id | bigint | PK, auto-increment | ID pengaturan |
+| id | uuid | PK | ID pengaturan |
 | judul | varchar(255) | required | Judul utama |
 | sub_judul | varchar(255) | required | Sub judul |
 | tanggal_tutup | date | required | Tanggal tutup pendaftaran |
@@ -578,6 +606,49 @@ bapeltan/
 | lokasi | varchar(255) | nullable | Lokasi pelatihan |
 | persyaratan | json | nullable | Array persyaratan |
 | fasilitas | json | nullable | Array fasilitas |
+| created_at | timestamp | auto | - |
+| updated_at | timestamp | auto | - |
+
+#### 5.2.15 `pelatihan_tahapans`
+
+| Kolom | Tipe | Constraint | Keterangan |
+|-------|------|------------|------------|
+| id | uuid | PK | ID tahapan |
+| kegiatan_id | uuid | FK → kegiatans.id | Kegiatan terkait |
+| nama | varchar(255) | required | Nama tahapan (contoh: "Registrasi Ulang", "Pre-Test", "Materi Hari 1") |
+| tipe | enum('form','harian',' evaluasi','info') | required | Tipe tahapan |
+| urutan | integer | required | Urutan tahapan dalam kegiatan |
+| deskripsi | text | nullable | Deskripsi tahapan |
+| is_required | boolean | default: true | Apakah tahapan wajib |
+| created_at | timestamp | auto | - |
+| updated_at | timestamp | auto | - |
+
+#### 5.2.16 `pelatihan_tahapan_progress`
+
+| Kolom | Tipe | Constraint | Keterangan |
+|-------|------|------------|------------|
+| id | uuid | PK | ID progress |
+| tahapan_id | uuid | FK → pelatihan_tahapans.id | Tahapan terkait |
+| peserta_nik | varchar(16) | FK → pesertas.nik | NIK peserta |
+| status | enum('active','completed') | default: 'active' | Status progress |
+| jawaban | json | nullable | Jawaban pertanyaan (key: question_id, value: jawaban) |
+| completed_at | timestamp | nullable | Waktu tahapan diselesaikan |
+| created_at | timestamp | auto | - |
+| updated_at | timestamp | auto | - |
+
+**Unique Constraint**: `(tahapan_id, peserta_nik)` — satu peserta hanya punya satu progress per tahapan.
+
+#### 5.2.17 `pelatihan_tahapan_questions`
+
+| Kolom | Tipe | Constraint | Keterangan |
+|-------|------|------------|------------|
+| id | uuid | PK | ID pertanyaan |
+| tahapan_id | uuid | FK → pelatihan_tahapans.id | Tahapan terkait |
+| pertanyaan | text | required | Teks pertanyaan |
+| tipe | enum('radio','checkbox','text','rating','scale','mood') | required | Tipe pertanyaan |
+| opsi | json | nullable | Array opsi jawaban (untuk radio/checkbox) |
+| wajib | boolean | default: true | Apakah pertanyaan wajib dijawab |
+| urutan | integer | nullable | Urutan pertanyaan |
 | created_at | timestamp | auto | - |
 | updated_at | timestamp | auto | - |
 
@@ -654,7 +725,7 @@ bapeltan/
 |-------|--------|
 | **Path** | `/admin` |
 | **Widget** | - Total peserta terdaftar<br>- Jumlah pelatihan aktif<br>- Registrasi pending<br>- Registrasi diterima bulan ini |
-| **Navigation** | Sidebar dengan nav groups: DATA, EVALUASI |
+| **Navigation** | Sidebar dengan nav groups: PELATIHAN, EVALUASI, MASTER DATA |
 
 #### 6.2.2 Manajemen Peserta
 
@@ -662,7 +733,7 @@ bapeltan/
 |-------|--------|
 | **Resource** | `PesertaResource` |
 | **Path** | `/admin/pesertas` |
-| **Nav Group** | DATA |
+| **Nav Group** | MASTER DATA |
 | **Fitur** | Tabel list, search, filter, create, edit, delete |
 | **Form Fields** | nik, nama, tempat_lahir, tanggal_lahir, nomor_telepon, agama, jenis_kelamin, status_pernikahan, pendidikan_terakhir, pekerjaan, usaha_tani, alamat_lengkap, nama_poktan, alamat_poktan, nip, email, kabupaten_id |
 | **Action Create** | Otomatis buat User (role: peserta) dengan password default |
@@ -675,10 +746,10 @@ bapeltan/
 |-------|--------|
 | **Resource** | `KabupatenResource` |
 | **Path** | `/admin/kabupatens` |
-| **Nav Group** | DATA |
+| **Nav Group** | MASTER DATA |
 | **Fitur** | Tabel list, search, create, edit, delete |
-| **Form Fields** | code, name |
-| **Table Columns** | code, name |
+| **Form Fields** | kode, nama |
+| **Table Columns** | kode, nama |
 | **Seed Data** | 30 kabupaten Jawa Tengah |
 
 #### 6.2.4 Manajemen Kegiatan
@@ -687,9 +758,9 @@ bapeltan/
 |-------|--------|
 | **Resource** | `KegiatanResource` |
 | **Path** | `/admin/kegiatans` |
-| **Nav Group** | DATA |
+| **Nav Group** | PELATIHAN |
 | **Fitur** | Tabel list, search, filter by status/type, create, edit, delete |
-| **Form Fields** | nama_pelatihan, kode_pelatihan (unique), tanggal_mulai, tanggal_selesai, kuota, status, deskripsi, kegiatan_type_id, group_id |
+| **Form Fields** | nama_pelatihan, kode_pelatihan (unique), tanggal_mulai, tanggal_selesai, kuota, status, deskripsi, video_url (link YouTube), kegiatan_type_id, group_id |
 | **Table Columns** | kode_pelatihan, nama_pelatihan, kegiatan_type, tanggal_mulai, tanggal_selesai, kuota, status, jumlah_terdaftar |
 | **Computed** | `jumlah_peserta_diterima` (accessor), `kuota_tersedia` (accessor) |
 | **Relations** | belongsTo(KegiatanType), hasMany(RegistrasiUlang), belongsToMany(Peserta) |
@@ -700,7 +771,7 @@ bapeltan/
 |-------|--------|
 | **Resource** | `KegiatanTypeResource` |
 | **Path** | `/admin/kegiatan-types` |
-| **Nav Group** | DATA |
+| **Nav Group** | MASTER DATA |
 | **Fitur** | Tabel list, create, edit, delete |
 | **Form Fields** | nama_type |
 | **Seed Data** | Agribisnis Tanaman Pangan, Agribisnis Perkebunan, Mekanisasi Pertanian |
@@ -711,7 +782,7 @@ bapeltan/
 |-------|--------|
 | **Resource** | `GroupResource` |
 | **Path** | `/admin/groups` |
-| **Nav Group** | DATA |
+| **Nav Group** | MASTER DATA |
 | **Fitur** | Tabel list, create, edit, delete |
 | **Form Fields** | name, group_link (unique), group_username, description, status, kegiatan_id |
 | **Table Columns** | name, group_link, status, kegiatan |
@@ -722,15 +793,29 @@ bapeltan/
 |-------|--------|
 | **Resource** | `RegistrasiUlangResource` |
 | **Path** | `/admin/registrasi-ulangs` |
-| **Nav Group** | DATA |
+| **Nav Group** | PELATIHAN |
 | **Fitur** | Tabel list, filter by status, bulk actions, individual actions |
 | **Form Fields** | peserta_nik, kegiatan_id, status, catatan |
 | **Table Columns** | peserta.nama, kegiatan.nama_pelatihan, status, catatan, created_at |
 | **Actions** | - **Terima**: Set status = diterima<br>- **Tolak**: Set status = ditolak, input catatan<br>- **Selesai**: Set status = selesai<br>- **Upload Sertifikat**: Upload file sertifikat |
-| **Status Workflow** | pending → diterima / ditolak → selesai |
+| **Status Workflow** | pending → diterima / ditolak → bersedia (peserta konfirmasi) → selesai |
 | **Relations** | belongsTo(Peserta), belongsTo(Kegiatan) |
 
-#### 6.2.8 Manajemen Evaluasi Type
+#### 6.2.8 Manajemen Pelatihan Tahapan
+
+| Field | Detail |
+|-------|--------|
+| **Resource** | `PelatihanTahapanResource` |
+| **Path** | `/admin/pelatihan-tahapans` |
+| **Nav Group** | PELATIHAN |
+| **Fitur** | Tabel list (searchable, filter by kegiatan), create, edit, delete |
+| **Form Fields** | kegiatan_id (select), nama, tipe (form/harian/evaluasi/info), urutan, deskripsi, is_required |
+| **Table Columns** | nama, kegiatan.nama_pelatihan, tipe, urutan, is_required |
+| **Relation Manager 1** | `QuestionsRelationManager` — CRUD pertanyaan (6 tipe: radio/checkbox/text/rating/scale/mood) |
+| **Relation Manager 2** | `ProgressRelationManager` — Lihat jawaban & status progress peserta (dengan modal detail) |
+| **Sort Order** | 2 (setelah Kegiatan) |
+
+#### 6.2.9 Manajemen Evaluasi Type
 
 | Field | Detail |
 |-------|--------|
@@ -740,7 +825,7 @@ bapeltan/
 | **Fitur** | Tabel list, create, edit, delete |
 | **Form Fields** | nama, deskripsi |
 
-#### 6.2.9 Manajemen Evaluasi
+#### 6.2.10 Manajemen Evaluasi
 
 | Field | Detail |
 |-------|--------|
@@ -750,7 +835,7 @@ bapeltan/
 | **Fitur** | Tabel list, create, edit, delete + RelationManager untuk Questions |
 | **Form Fields** | kegiatan_id, evaluasi_type_id, judul |
 | **Relation Manager** | `QuestionsRelationManager` — kelola pertanyaan & opsi jawaban |
-| **Tipe Jawaban** | - **radio**: Pilihan ganda (single answer)<br>- **checkbox**: Pilihan ganda (multiple answers)<br>- **scale**: Skala 1-5<br>- **text**: Jawaban bebas |
+| **Tipe Jawaban** | - **radio**: Pilihan ganda (single answer)<br>- **checkbox**: Pilihan ganda (multiple answers)<br>- **scale**: Skala 1-5<br>- **text**: Jawaban bebas<br>- **rating**: Rating 1-5 (bintang)<br>- **mood**: Pilihan mood (Senang/Netral/Sedih) |
 
 #### 6.2.10 Pengaturan
 
@@ -772,7 +857,7 @@ bapeltan/
 |-------|--------|
 | **Path** | `/peserta` |
 | **Component** | `PesertaDashboard` |
-| **Content** | Halaman sapaan dengan informasi pelatihan |
+| **Content** | 4 stat boxes (Total Pelatihan, Tahapan Selesai, Menunggu Konfirmasi, Evaluasi Dikerjakan) + tabel Kegiatan Tersedia (5 kolom: Nama, Tipe, Tanggal, Kuota, Aksi) + tombol "Daftar" dengan badge status |
 
 #### 6.3.2 Registrasi Ulang (Peserta)
 
@@ -783,8 +868,59 @@ bapeltan/
 | **Fitur** | List kegiatan yang tersedia, aksi "Daftar" |
 | **Logic** | - Tampilkan hanya kegiatan dengan status `active`<br>- Filter kegiatan yang belum didaftar<br>- Action "Daftar" buat registrasi baru (status: pending) |
 | **Validasi** | Cek duplikasi, cek jadwal konflik, cek kuota |
+| **Status Badge** | `pending` (kuning), `diterima` (hijau), `ditolak` (merah), `bersedia` (biru), `selesai` (abu) |
 
-#### 6.3.3 Evaluasi (Peserta)
+#### 6.3.3 Registrasi Ulang Page (Bersedia)
+
+| Field | Detail |
+|-------|--------|
+| **Page** | `RegistrasiUlangPage` |
+| **Path** | `/peserta/registrasi-ulang-page` |
+| **Logic** | Halaman standalone untuk peserta yang statusnya `diterima`.<br>Tampilkan tombol "Bersedia" untuk konfirmasi kesediaan hadir.<br>Setelah diklik, status berubah dari `diterima` → `bersedia`.<br>Sudah dikonfirmasi: tampilkan badge "Sudah Dikonfirmasi". |
+
+#### 6.3.4 Pelatihan Tahapan (List)
+
+| Field | Detail |
+|-------|--------|
+| **Page** | `TahapanListPage` |
+| **Path** | `/peserta/tahapan-list-page` |
+| **Logic** | Tampilkan semua kegiatan yang diikuti peserta.<br>Setiap kegiatan menampilkan progress bar (persentase tahapan selesai).<br>Klik kegiatan → navigasi ke `KegiatanTahapanPage`. |
+
+#### 6.3.5 Kegiatan Tahapan (Timeline)
+
+| Field | Detail |
+|-------|--------|
+| **Page** | `KegiatanTahapanPage` |
+| **Path** | `/peserta/kegiatan-tahapan/{kegiatanId}` |
+| **Component** | Timeline UI vertikal dengan progress bar |
+| **Logic** | Tampilkan semua tahapan dalam urutan.<br>Status tiap tahapan: `active` (sedang dikerjakan), `completed` (selesai), `belum` (belum aktif).<br>Tahapan sebelumnya harus selesai dulu sebelum tahapan berikutnya aktif (sequential locking). |
+
+#### 6.3.6 Tahapan Detail (Form Pertanyaan)
+
+| Field | Detail |
+|-------|--------|
+| **Page** | `TahapanDetailPage` |
+| **Path** | `/peserta/tahapan-detail/{tahapanId}` |
+| **Tipe Form** | 6 tipe pertanyaan: |
+| | - **radio**: Pilihan ganda (single answer) |
+| | - **checkbox**: Pilihan ganda (multiple answers) |
+| | - **text**: Jawaban bebas (textarea) |
+| | - **rating**: Rating 1-5 (bintang) |
+| | - **scale**: Skala 1-10 |
+| | - **mood**: Pilihan mood (Senang/Netral/Sedih) |
+| **Daily Mood** | Setiap harian, peserta bisa memilih mood. Riwayat mood disimpan di JSON `riwayat` dengan key tanggal. |
+| **Logic** | 1. Validasi semua pertanyaan wajib terjawab<br>2. Simpan jawaban ke `pelatihan_tahapan_progress.jawaban` (JSON)<br>3. Tandai tahapan `completed`<br>4. Aktifkan tahapan berikutnya (sequential) |
+
+#### 6.3.7 Video Pelatihan
+
+| Field | Detail |
+|-------|--------|
+| **Page** | `VideoPelatihanPage` |
+| **Path** | `/peserta/video-pelatihan-page` |
+| **Icon** | Tidak ada icon di sidebar |
+| **Logic** | Tampilkan daftar kegiatan yang memiliki `video_url` (link YouTube).<br>Embed video menggunakan YouTube iframe.<br>Hanya tampilkan kegiatan yang registrasinya `diterima` atau `bersedia`. |
+
+#### 6.3.8 Evaluasi (Peserta)
 
 | Field | Detail |
 |-------|--------|
@@ -793,7 +929,7 @@ bapeltan/
 | **Filter** | Hanya tampilkan evaluasi untuk kegiatan yang registrasinya `diterima` |
 | **Action** | "Ikuti Evaluasi" → form halaman `TakeEvaluasi` |
 
-#### 6.3.4 Take Evaluasi
+#### 6.3.9 Take Evaluasi
 
 | Field | Detail |
 |-------|--------|
@@ -803,7 +939,7 @@ bapeltan/
 | **Logic** | 1. Load evaluasi beserta questions & options<br>2. Tampilkan form berdasarkan tipe_jawaban setiap pertanyaan<br>3. Simpan jawaban ke `evaluasi_responses`<br>4. Tandai evaluasi sudah diikuti |
 | **Tipe Form** | - **radio**: Radio button group<br> - **checkbox**: Checkbox group<br> - **scale**: Slider atau dropdown 1-5<br> - **text**: Textarea |
 
-#### 6.3.5 Group (Peserta)
+#### 6.3.10 Group (Peserta)
 
 | Field | Detail |
 |-------|--------|
@@ -966,18 +1102,21 @@ bapeltan/
 │                        │
 │  📊 Dashboard          │
 │                        │
-│  DATA                  │
-│  ├── 👥 Peserta        │
-│  ├── 🏛️ Kabupaten      │
+│  PELATIHAN             │
 │  ├── 📋 Kegiatan       │
-│  ├── 📁 Kegiatan Type  │
-│  ├── 👨‍👩‍👧 Group           │
+│  ├── 📑 Tahapan        │
 │  ├── 📝 Registrasi     │
 │  └── 📄 Zilenial       │
 │                        │
 │  EVALUASI              │
 │  ├── 📊 Tipe Evaluasi  │
 │  └── 📝 Evaluasi       │
+│                        │
+│  MASTER DATA           │
+│  ├── 👥 Peserta        │
+│  ├── 🏛️ Kabupaten      │
+│  ├── 👨‍👩‍👧 Group Peserta  │
+│  └── 🔑 User           │
 │                        │
 │  ⚙️ Pengaturan          │
 │                        │
@@ -994,7 +1133,7 @@ bapeltan/
 | Aspek | Detail |
 |-------|--------|
 | **Password Hashing** | bcrypt (Laravel default) |
-| **Session** | Database driver |
+| **Session** | File driver (bukan database, karena UUID primary key di tabel users)
 | **Remember Me** | Token-based (60 hari) |
 | **CSRF Protection** | Laravel default (web routes) |
 
@@ -1072,8 +1211,20 @@ bapeltan/
 | 2.6 | Refactor validasi ke Form Request classes | P2 | ✅ Selesai | `CekNikRequest`, `DaftarPelatihanRequest` |
 | 2.7 | Tambahkan API Resources untuk response JSON | P3 | ✅ Selesai | `PesertaResource`, `KegiatanResource`, `KegiatanTypeResource`, `KabupatenResource`, `RegistrasiUlangResource` |
 | 2.8 | Perbaiki Filament resource panels | P2 | ✅ Selesai | Tambah kolom `sertifikat_path`, `catatan_sertifikat`, `tanggal_selesai_pelatihan` ke model + migration |
+| 2.9 | Pelatihan Tahapan (11-step progression) | P1 | ✅ Selesai | Model, migration, seeder 270 soal, sequential locking |
+| 2.10 | Timeline UI untuk tahapan | P2 | ✅ Selesai | Progress bar vertikal dengan status icons |
+| 2.11 | UUID conversion untuk semua tabel | P1 | ✅ Selesai | 17 migration files, 15 models dengan `HasUuids` |
+| 2.12 | Login error notification | P2 | ✅ Selesai | Alert banner di modal saat login gagal |
+| 2.13 | Auto-init tahapan progress | P2 | ✅ Selesai | Tahapan pertama aktif saat admin terima registrasi |
+| 2.14 | Registrasi Zilenial resource (Admin + Peserta) | P2 | ✅ Selesai | Form + table dengan status filter |
+| 2.15 | Alur "Bersedia" untuk registrasi | P2 | ✅ Selesai | Status `bersedia` ditambahkan ke enum |
+| 2.16 | Questions CRUD (Admin) — 6 tipe pertanyaan | P1 | ✅ Selesai | `QuestionsRelationManager` dengan radio/checkbox/text/rating/scale/mood |
+| 2.17 | Progress Peserta tab (Admin) | P2 | ✅ Selesai | `ProgressRelationManager` dengan modal jawaban |
+| 2.18 | Video Pelatihan page (YouTube links) | P2 | ✅ Selesai | `VideoPelatihanPage` dengan YouTube iframe embed |
+| 2.19 | Admin sidebar reorganized | P3 | ✅ Selesai | PELATIHAN / EVALUASI / MASTER DATA |
+| 2.20 | Fix 5 Critical Bugs dari clean code audit | P1 | ✅ Selesai | See Section 11.1 (C5-C9) |
 
-**Deliverable**: Fitur inti lengkap dan berfungsi. ✅
+**Deliverable**: Fitur inti + tahapan lengkap dan berfungsi. ✅
 
 ---
 
@@ -1119,6 +1270,11 @@ bapeltan/
 | C2 | API tanpa rate limiting | `routes/web.php` | Tambah `->middleware('throttle:30')` | ✅ Selesai |
 | C3 | Login tanpa brute force protection | `SignInController` | Tambah `throttle:5,1` middleware | ✅ Selesai |
 | C4 | API publik tanpa autentikasi | `/api/cek-nik`, `/api/daftar-pelatihan` | Minimal tambah CSRF atau API token | ✅ Selesai |
+| C5 | Wrong table name `pendaftarans` di raw SQL | `KegiatanResource.php:163` | Ganti ke `registrasi_ulangs` | ✅ Selesai |
+| C6 | Wrong status value `'aktif'` (harusnya `'active'`) | `RegistrasiZilenialResource.php:48` | Ganti ke `'active'` | ✅ Selesai |
+| C7 | Wrong field names `code`/`name` (harusnya `kode`/`nama`) | `KabupatenResource.php:14-15` | Ganti ke `kode`/`nama` | ✅ Selesai |
+| C8 | Dead code `PublicTrainingRegistration` reference model `Pendaftaran` yang tidak ada | `app/Livewire/PublicTrainingRegistration.php` | Hapus file + unused import di `User.php` | ✅ Selesai |
+| C9 | Tahapan completion logic terduplikasi di 3 file | `TahapanDetailPage`, `KegiatanTahapanPage`, `PesertaDashboard` | Extract ke `TahapanProgressService` | ✅ Selesai |
 
 ### 11.2 Moderate
 
@@ -1205,6 +1361,10 @@ bapeltan/
 | **Evaluasi** | Ujian/pre-test/post-test terkait pelatihan |
 | **Group** | Grup WhatsApp untuk komunikasi peserta pelatihan |
 | **Pengaturan** | Konfigurasi umum aplikasi (judul, persyaratan, fasilitas) |
+| **Pelatihan Tahapan** | Sistem 11-step progression untuk mengikuti pelatihan (registrasi → pre-test → materi → post-test → evaluasi) |
+| **Tahapan** | Satu langkah dalam pelatihan (contoh: Pre-Test, Materi Hari 1, Post-Test) |
+| **Bersedia** | Status konfirmasi peserta bahwa bersedia hadir setelah diterima admin |
+| **Sequential Locking** | Mekanisme di mana tahapan berikutnya hanya aktif setelah tahapan sebelumnya selesai |
 
 ---
 
@@ -1226,7 +1386,13 @@ bapeltan/
 
 **groups.status**: `active`, `inactive`
 
-**registrasi_ulangs.status**: `pending`, `diterima`, `ditolak`, `selesai`
+**registrasi_ulangs.status**: `pending`, `diterima`, `ditolak`, `bersedia`, `selesai`
+
+**pelatihan_tahapans.tipe**: `form`, `harian`, `evaluasi`, `info`
+
+**pelatihan_tahapan_progress.status**: `active`, `completed`
+
+**pelatihan_tahapan_questions.tipe**: `radio`, `checkbox`, `text`, `rating`, `scale`, `mood`
 
 **evaluasi_questions.tipe_jawaban**: `radio`, `checkbox`, `scale`, `text`
 
