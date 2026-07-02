@@ -10,7 +10,7 @@
 | **Nama Produk** | Sistem Informasi Manajemen Pelatihan Bapeltan Jateng |
 | **Versi Dokumen** | 1.3 |
 | **Tanggal** | 2 Juli 2026 |
-| **Status** | In Progress (Phase 2 + Tahapan Selesai, Phase 3 Pending) |
+| **Status** | In Progress (Phase 3 Selesai, Phase 4 Pending) |
 | **Author** | Tim Pengembang |
 
 ---
@@ -212,7 +212,8 @@ bapeltan/
 ├── app/
 │   ├── Filament/
 │   │   ├── Pages/
-│   │   │   └── Pengaturans.php              # Halaman pengaturan
+│   │   │   ├── Pengaturans.php              # Halaman pengaturan
+│   │   │   └── ExportData.php               # Export peserta/registrasi CSV
 │   │   ├── Peserta/                          # Panel Peserta
 │   │   │   ├── Pages/
 │   │   │   │   ├── PesertaDashboard.php
@@ -228,6 +229,8 @@ bapeltan/
 │   │   │       ├── RegistrasiUlangResource.php
 │   │   │       └── RegistrasiZilenialResource.php
 │   │   └── Resources/                        # Panel Admin
+│   │       ├── ActivityLogResource.php
+│   │       ├── ArtikelResource.php
 │   │       ├── EvaluasiResource.php
 │   │       ├── EvaluasiTypeResource.php
 │   │       ├── GroupResource.php
@@ -235,6 +238,7 @@ bapeltan/
 │   │       ├── KegiatanResource.php
 │   │       ├── PelatihanTahapanResource.php  # Admin CRUD tahapan
 │   │       ├── PesertaResource.php
+│   │       ├── PartnerResource.php
 │   │       ├── RegistrasiUlangResource.php
 │   │       └── RegistrasiZilenialResource.php
 │   ├── Http/
@@ -247,6 +251,8 @@ bapeltan/
 │   ├── Livewire/
 │   │   └── PublicRegistrationForm.php
 │   ├── Models/
+│   │   ├── ActivityLog.php
+│   │   ├── Artikel.php
 │   │   ├── Evaluasi.php
 │   │   ├── EvaluasiQuestion.php
 │   │   ├── EvaluasiQuestionOption.php
@@ -259,6 +265,7 @@ bapeltan/
 │   │   ├── PelatihanTahapan.php
 │   │   ├── PelatihanTahapanProgress.php
 │   │   ├── PelatihanTahapanQuestion.php
+│   │   ├── Partner.php
 │   │   ├── Pengaturan.php
 │   │   ├── Peserta.php
 │   │   ├── RegistrasiUlang.php
@@ -275,10 +282,12 @@ bapeltan/
 │   ├── factories/
 │   ├── migrations/                           # 20+ migration files (UUID)
 │   └── seeders/
+│       ├── ArtikelSeeder.php
 │       ├── DatabaseSeeder.php
 │       ├── KabupatenSeeder.php
 │       ├── KegiatanTypeSeeder.php
 │       ├── PelatihanTahapanSeeder.php
+│       ├── PartnerSeeder.php
 │       ├── TahapanQuestionsSeeder.php
 │       └── TestDataSeeder.php
 ├── resources/
@@ -1228,19 +1237,18 @@ bapeltan/
 
 ---
 
-### Phase 3 — Fitur Pendukung (Minggu 6-8)
+### Phase 3 — Fitur Pendukung (Minggu 6-8) ✅ SELESAI
 
-| # | Task | Priority | Estimasi |
-|---|------|----------|----------|
-| 3.1 | Manajemen Artikel: CRUD + model + migration | P2 | 3 hari |
-| 3.2 | Manajemen Video: CRUD + model + migration | P2 | 2 hari |
-| 3.3 | Manajemen Partner: CRUD + model + migration | P3 | 1 hari |
-| 3.4 | Sertifikat Digital: template + generate PDF | P2 | 3 hari |
-| 3.5 | Export Data: peserta/registrasi ke Excel | P2 | 2 hari |
-| 3.6 | Activity Log: log semua aksi penting | P3 | 2 hari |
-| 3.7 | Implementasi atau hapus RegistrasiZilenial | P3 | 1 hari |
+| # | Task | Priority | Estimasi | Status | Keterangan |
+|---|------|----------|----------|--------|------------|
+| 3.1 | Manajemen Artikel: CRUD + model + migration | P2 | 3 hari | ✅ Selesai | `ArtikelResource` + `Artikel` model + seeder 3 artikel |
+| 3.2 | Manajemen Partner: CRUD + model + migration | P3 | 1 hari | ✅ Selesai | `PartnerResource` + `Partner` model + seeder 3 partner |
+| 3.3 | Export Data: peserta/registrasi ke Excel/CSV | P2 | 2 hari | ✅ Selesai | `ExportData` page — download CSV peserta & registrasi |
+| 3.4 | Activity Log: log semua aksi penting | P3 | 2 hari | ✅ Selesai | `ActivityLog` model + resource + `ActivityLog::log()` helper |
+| 3.5 | Implementasi atau hapus RegistrasiZilenial | P3 | 1 hari | ✅ Selesai | Sudah terimplementasi — model + resource + pages |
+| 3.6 | Sertifikat Digital: template + generate PDF | P2 | 3 hari | ⏳ Phase 4 | Belum diimplementasi |
 
-**Deliverable**: Fitur pendukung lengkap.
+**Deliverable**: Fitur pendukung lengkap. ✅
 
 ---
 
@@ -1293,9 +1301,9 @@ bapeltan/
 | m1 | Tailwind CDN redundan di Blade views | Hapus CDN, Vite sudah handle | ✅ Selesai |
 | m2 | Tidak ada Form Request classes | Buat untuk setiap validasi | ✅ Selesai |
 | m3 | Tidak ada API resources/transformers | Buat untuk response JSON konsisten | ✅ Selesai |
-| m4 | Tidak ada logging untuk aksi penting | Tambah activity log | ⏳ Phase 3 |
+| m4 | Tidak ada logging untuk aksi penting | Tambah activity log | ✅ Selesai |
 | m5 | `Pengaturan` tidak ada validasi input | Tambah validation rules | ✅ Selesai |
-| m6 | `RegistrasiZilenial` model kosong | Implementasi atau hapus | ⏳ Phase 3 |
+| m6 | `RegistrasiZilenial` model kosong | Implementasi atau hapus | ✅ Selesai |
 
 ---
 

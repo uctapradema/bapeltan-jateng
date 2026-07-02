@@ -16,6 +16,9 @@ class DatabaseSeeder extends Seeder
             TestDataSeeder::class,
             PelatihanTahapanSeeder::class,
             InitTahapanProgressSeeder::class,
+            TahapanQuestionsSeeder::class,
+            ArtikelSeeder::class,
+            PartnerSeeder::class,
         ]);
     }
 }
