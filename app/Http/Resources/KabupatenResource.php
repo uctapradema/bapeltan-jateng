@@ -11,8 +11,8 @@ class KabupatenResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'code' => $this->code,
-            'name' => $this->name,
+            'code' => $this->kode,
+            'name' => $this->nama,
         ];
     }
 }

@@ -6,6 +6,7 @@ use App\Models\PelatihanTahapan;
 use App\Models\PelatihanTahapanProgress;
 use App\Models\Pengaturan;
 use App\Models\RegistrasiUlang;
+use App\Services\TahapanProgressService;
 use Filament\Pages\Page;
 use Illuminate\Support\Facades\Auth;
 
@@ -93,6 +94,7 @@ class PesertaDashboard extends Page
 
         return \App\Models\Kegiatan::with('kegiatanType')
             ->where('status', 'active')
+            ->orderBy('tanggal_mulai')
             ->get()
             ->map(fn ($k) => [
                 'id' => $k->id,
@@ -210,34 +212,9 @@ class PesertaDashboard extends Page
         $peserta = $user->peserta;
         if (!$peserta) return;
 
-        $tahapan = PelatihanTahapan::find($tahapanId);
-        if (!$tahapan) return;
+        $service = app(TahapanProgressService::class);
+        $service->completeTahapan($tahapanId, $peserta->nik);
 
-        $progress = PelatihanTahapanProgress::updateOrCreate(
-            ['tahapan_id' => $tahapanId, 'peserta_nik' => $peserta->nik],
-            [
-                'status' => 'completed',
-                'completed_at' => now(),
-            ]
-        );
-
-        $this->activateNextTahapan($tahapan, $peserta->nik);
-
-        session()->flash('success', "Tahapan \"{$tahapan->nama}\" berhasil diselesaikan!");
-    }
-
-    private function activateNextTahapan(PelatihanTahapan $current, string $pesertaNik): void
-    {
-        $next = PelatihanTahapan::where('kegiatan_id', $current->kegiatan_id)
-            ->where('urutan', '>', $current->urutan)
-            ->orderBy('urutan')
-            ->first();
-
-        if ($next) {
-            PelatihanTahapanProgress::updateOrCreate(
-                ['tahapan_id' => $next->id, 'peserta_nik' => $pesertaNik],
-                ['status' => 'active']
-            );
-        }
+        session()->flash('success', 'Tahapan berhasil diselesaikan!');
     }
 }

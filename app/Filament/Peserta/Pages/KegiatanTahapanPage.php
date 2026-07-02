@@ -5,6 +5,7 @@ namespace App\Filament\Peserta\Pages;
 use App\Models\PelatihanTahapan;
 use App\Models\PelatihanTahapanProgress;
 use App\Models\RegistrasiUlang;
+use App\Services\TahapanProgressService;
 use Filament\Pages\Page;
 use Illuminate\Support\Facades\Auth;
 
@@ -44,7 +45,7 @@ class KegiatanTahapanPage extends Page
 
         $reg = RegistrasiUlang::where('peserta_nik', $user->peserta->nik)
             ->where('kegiatan_id', $kegiatanId)
-            ->where('status', 'diterima')
+            ->whereIn('status', ['diterima', 'bersedia'])
             ->with('kegiatan')
             ->first();
 
@@ -102,25 +103,8 @@ class KegiatanTahapanPage extends Page
         $tahapan = PelatihanTahapan::find($tahapanId);
         if (!$tahapan || $tahapan->kegiatan_id !== $this->kegiatanId) return;
 
-        PelatihanTahapanProgress::updateOrCreate(
-            ['tahapan_id' => $tahapanId, 'peserta_nik' => $peserta->nik],
-            [
-                'status' => 'completed',
-                'completed_at' => now(),
-            ]
-        );
-
-        $next = PelatihanTahapan::where('kegiatan_id', $tahapan->kegiatan_id)
-            ->where('urutan', '>', $tahapan->urutan)
-            ->orderBy('urutan')
-            ->first();
-
-        if ($next) {
-            PelatihanTahapanProgress::updateOrCreate(
-                ['tahapan_id' => $next->id, 'peserta_nik' => $peserta->nik],
-                ['status' => 'active']
-            );
-        }
+        $service = app(TahapanProgressService::class);
+        $service->completeTahapan($tahapanId, $peserta->nik);
 
         session()->flash('success', "Tahapan \"{$tahapan->nama}\" berhasil diselesaikan!");
         $this->redirect(route('filament.peserta.pages.kegiatan-tahapan-page', ['kegiatanId' => $this->kegiatanId]));

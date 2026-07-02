@@ -12,6 +12,7 @@ use App\Models\KegiatanType;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\Placeholder;
 use Filament\Resources\Resource;
 use Filament\Forms\Components\Select;
 use Filament\Notifications\Notification;
@@ -23,7 +24,7 @@ class KegiatanResource extends Resource
     protected static ?string $model = Kegiatan::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-academic-cap';
-    protected static ?string $navigationGroup = 'DATA';
+    protected static ?string $navigationGroup = 'PELATIHAN';
     protected static ?int $navigationSort = 1;
 
     protected static ?string $modelLabel = 'Kegiatan';
@@ -98,6 +99,11 @@ class KegiatanResource extends Resource
                 Textarea::make('deskripsi')
                     ->columnSpanFull()
                     ->label('Deskripsi Pelatihan'),
+                TextInput::make('video_url')
+                    ->label('Link Video')
+                    ->placeholder('https://www.youtube.com/watch?v=...')
+                    ->helperText('URL video YouTube atau platform lainnya')
+                    ->columnSpanFull(),
             ]);
     }
 
@@ -154,7 +160,7 @@ class KegiatanResource extends Resource
                     ])
                     ->label('Status'),
                 Tables\Filters\Filter::make('kuota_tersedia')
-                    ->query(fn (Builder $query): Builder => $query->whereRaw('(SELECT COUNT(*) FROM pendaftarans WHERE pendaftarans.kegiatan_id = kegiatans.id AND status = "diterima") < kegiatans.kuota'))
+                    ->query(fn (Builder $query): Builder => $query->whereRaw('(SELECT COUNT(*) FROM registrasi_ulangs WHERE registrasi_ulangs.kegiatan_id = kegiatans.id AND status = "diterima") < kegiatans.kuota'))
                     ->label('Kuota Masih Tersedia'),
             ])
             ->actions([
