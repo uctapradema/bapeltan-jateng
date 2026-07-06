@@ -58,6 +58,7 @@ class RegistrasiUlangPage extends Page
 
         $registrasi->update(['status' => 'bersedia']);
 
-        session()->flash('success', "Konfirmasi kebersediaan untuk \"{$registrasi->kegiatan?->nama_pelatihan ?? '-'}\" berhasil!");
+        $namaKegiatan = $registrasi->kegiatan?->nama_pelatihan ?? '-';
+        session()->flash('success', "Konfirmasi kebersediaan untuk \"{$namaKegiatan}\" berhasil!");
     }
 }
