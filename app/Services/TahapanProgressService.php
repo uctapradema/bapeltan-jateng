@@ -7,12 +7,12 @@ use App\Models\PelatihanTahapanProgress;
 
 class TahapanProgressService
 {
-    public function completeTahapan(string $tahapanId, string $pesertaNik, ?array $jawaban = null): PelatihanTahapanProgress
+    public function completeTahapan(string $tahapanId, string $pesertaId, ?array $jawaban = null): PelatihanTahapanProgress
     {
         $tahapan = PelatihanTahapan::findOrFail($tahapanId);
 
         $progress = PelatihanTahapanProgress::updateOrCreate(
-            ['tahapan_id' => $tahapanId, 'peserta_nik' => $pesertaNik],
+            ['tahapan_id' => $tahapanId, 'peserta_id' => $pesertaId],
             [
                 'status' => 'completed',
                 'jawaban' => $jawaban,
@@ -20,12 +20,12 @@ class TahapanProgressService
             ]
         );
 
-        $this->activateNextTahapan($tahapan, $pesertaNik);
+        $this->activateNextTahapan($tahapan, $pesertaId);
 
         return $progress;
     }
 
-    public function activateNextTahapan(PelatihanTahapan $current, string $pesertaNik): void
+    public function activateNextTahapan(PelatihanTahapan $current, string $pesertaId): void
     {
         $next = PelatihanTahapan::where('kegiatan_id', $current->kegiatan_id)
             ->where('urutan', '>', $current->urutan)
@@ -34,7 +34,7 @@ class TahapanProgressService
 
         if ($next) {
             PelatihanTahapanProgress::updateOrCreate(
-                ['tahapan_id' => $next->id, 'peserta_nik' => $pesertaNik],
+                ['tahapan_id' => $next->id, 'peserta_id' => $pesertaId],
                 ['status' => 'active']
             );
         }

@@ -12,7 +12,7 @@ class MateriPelatihanPage extends Page
 
     protected static ?string $navigationGroup = 'Pelatihan';
 
-    protected static ?int $navigationSort = 4;
+    protected static ?int $navigationSort = 3;
 
     protected static ?string $navigationLabel = 'Materi Pelatihan';
 
@@ -56,8 +56,8 @@ class MateriPelatihanPage extends Page
                 'kode' => $kegiatan->kode_pelatihan,
                 'nama' => $kegiatan->nama_pelatihan,
                 'jenis' => $kegiatan->kegiatanType->nama_type ?? '-',
-                'tanggal_mulai' => $kegiatan->tanggal_mulai->format('d M Y'),
-                'tanggal_selesai' => $kegiatan->tanggal_selesai->format('d M Y'),
+                'tanggal_mulai' => $kegiatan->tanggal_mulai?->format('d M Y') ?? '-',
+                'tanggal_selesai' => $kegiatan->tanggal_selesai?->format('d M Y') ?? '-',
                 'status_reg' => $reg->status,
                 'materis' => $kegiatan->materis->map(fn ($m) => [
                     'id' => $m->id,

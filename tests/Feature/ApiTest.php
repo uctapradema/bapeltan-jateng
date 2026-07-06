@@ -6,49 +6,38 @@ use App\Models\Kegiatan;
 use App\Models\Kabupaten;
 use App\Models\KegiatanType;
 use App\Models\Peserta;
-use App\Models\RegistrasiUlang;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use Tests\TestCase;
 
 class ApiTest extends TestCase
 {
     use RefreshDatabase;
 
-    private function createKabupaten(string $id = 'kab-1'): void
+    private function createKabupaten(): Kabupaten
     {
-        DB::table('kabupatens')->insert([
-            'id' => $id,
+        return Kabupaten::create([
             'kode' => '3301',
             'nama' => 'Temanggung',
-            'created_at' => now(),
-            'updated_at' => now(),
         ]);
     }
 
-    private function createKegiatanType(string $id = 'type-1'): void
+    private function createKegiatanType(): KegiatanType
     {
-        DB::table('kegiatan_types')->insert([
-            'id' => $id,
-            'nama_type' => 'Test Type',
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
+        return KegiatanType::create(['nama_type' => 'Test Type']);
     }
 
-    private function createKegiatan(string $id = 'keg-1', string $typeId = 'type-1'): void
+    private function createKegiatan(KegiatanType $type): Kegiatan
     {
-        DB::table('kegiatans')->insert([
-            'id' => $id,
-            'kegiatan_type_id' => $typeId,
+        return Kegiatan::create([
+            'kegiatan_type_id' => $type->id,
             'nama_pelatihan' => 'Test Pelatihan',
             'kode_pelatihan' => 'TST-01',
             'tanggal_mulai' => '2026-10-01',
             'tanggal_selesai' => '2026-10-05',
             'kuota' => 30,
             'status' => 'active',
-            'created_at' => now(),
-            'updated_at' => now(),
         ]);
     }
 
@@ -64,21 +53,19 @@ class ApiTest extends TestCase
 
     public function test_cek_nik_returns_data_for_existing_peserta(): void
     {
-        $this->createKabupaten();
+        $kab = $this->createKabupaten();
 
-        DB::table('users')->insert([
-            'id' => 'user-peserta-1',
+        $user = User::create([
             'name' => 'Test Peserta',
             'email' => 'peserta@test.com',
             'role' => 'peserta',
             'password' => bcrypt('password'),
-            'created_at' => now(),
-            'updated_at' => now(),
         ]);
 
-        DB::table('pesertas')->insert([
+        Peserta::create([
+            'id' => (string) Str::uuid(),
             'nik' => '3301010101010001',
-            'user_id' => 'user-peserta-1',
+            'user_id' => $user->id,
             'nama' => 'Test Peserta',
             'tempat_lahir' => 'Temanggung',
             'tanggal_lahir' => '1990-01-01',
@@ -92,10 +79,8 @@ class ApiTest extends TestCase
             'alamat_lengkap' => 'Jl. Test No. 1',
             'nama_poktan' => 'Poktan Test',
             'alamat_poktan' => 'Jl. Poktan No. 1',
-            'kabupaten_id' => 'kab-1',
+            'kabupaten_id' => $kab->id,
             'email' => 'peserta@test.com',
-            'created_at' => now(),
-            'updated_at' => now(),
         ]);
 
         $response = $this->getJson('/api/cek-nik?nik=3301010101010001');
@@ -112,8 +97,8 @@ class ApiTest extends TestCase
 
     public function test_kegiatan_list_returns_active_kegiatan(): void
     {
-        $this->createKegiatanType();
-        $this->createKegiatan();
+        $type = $this->createKegiatanType();
+        $this->createKegiatan($type);
 
         $response = $this->getJson('/api/kegiatan');
 

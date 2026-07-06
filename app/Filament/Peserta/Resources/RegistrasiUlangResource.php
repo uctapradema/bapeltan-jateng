@@ -70,7 +70,7 @@ class RegistrasiUlangResource extends Resource
 
         return RegistrasiUlang::query()
             ->with('kegiatan')
-            ->where('peserta_nik', $user->peserta->nik);
+            ->where('peserta_id', $user->peserta->id);
     }
 
     public static function getRelations(): array

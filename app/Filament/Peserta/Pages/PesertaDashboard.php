@@ -20,7 +20,7 @@ class PesertaDashboard extends Page
     public function getTitle(): string
     {
         $user = Auth::user();
-        $nama = $user->peserta->nama ?? $user->name;
+        $nama = $user->peserta?->nama ?? $user->name;
 
         return "Hai, {$nama}!";
     }
@@ -98,11 +98,11 @@ class PesertaDashboard extends Page
             ->get()
             ->map(fn ($k) => [
                 'id' => $k->id,
-                'jenis' => $k->kegiatanType->nama_type ?? '-',
+                'jenis' => $k->kegiatanType?->nama_type ?? '-',
                 'kode' => $k->kode_pelatihan,
                 'nama' => $k->nama_pelatihan,
-                'mulai' => $k->tanggal_mulai->format('d M Y'),
-                'selesai' => $k->tanggal_selesai->format('d M Y'),
+                'mulai' => $k->tanggal_mulai?->format('d M Y') ?? '-',
+                'selesai' => $k->tanggal_selesai?->format('d M Y') ?? '-',
                 'kuota' => $k->kuota,
                 'terdaftar' => $k->jumlah_peserta_diterima,
                 'kuota_tersedia' => $k->kuota_tersedia,
@@ -134,7 +134,7 @@ class PesertaDashboard extends Page
             return;
         }
 
-        $alreadyRegistered = RegistrasiUlang::where('peserta_nik', $peserta->nik)
+        $alreadyRegistered = RegistrasiUlang::where('peserta_id', $peserta->id)
             ->where('kegiatan_id', $kegiatanId)
             ->exists();
 
@@ -144,7 +144,7 @@ class PesertaDashboard extends Page
         }
 
         RegistrasiUlang::create([
-            'peserta_nik' => $peserta->nik,
+            'peserta_id' => $peserta->id,
             'kegiatan_id' => $kegiatanId,
             'kegiatan_type_id' => $kegiatan->kegiatan_type_id,
             'tahun' => now()->year,
@@ -169,7 +169,7 @@ class PesertaDashboard extends Page
             $kegiatan = $reg->kegiatan;
             if (!$kegiatan || $kegiatan->tahapans->isEmpty()) continue;
 
-            $progressMap = PelatihanTahapanProgress::where('peserta_nik', $user->peserta->nik)
+            $progressMap = PelatihanTahapanProgress::where('peserta_id', $user->peserta->id)
                 ->whereIn('tahapan_id', $kegiatan->tahapans->pluck('id'))
                 ->pluck('status', 'tahapan_id')
                 ->toArray();
@@ -213,7 +213,7 @@ class PesertaDashboard extends Page
         if (!$peserta) return;
 
         $service = app(TahapanProgressService::class);
-        $service->completeTahapan($tahapanId, $peserta->nik);
+        $service->completeTahapan($tahapanId, $peserta->id);
 
         session()->flash('success', 'Tahapan berhasil diselesaikan!');
     }

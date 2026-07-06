@@ -15,10 +15,10 @@ class InitTahapanProgressSeeder extends Seeder
         $count = 0;
         foreach ($accepted as $reg) {
             $firstTahapan = PelatihanTahapan::where('kegiatan_id', $reg->kegiatan_id)->where('urutan', 1)->first();
-            if ($firstTahapan && !PelatihanTahapanProgress::where('tahapan_id', $firstTahapan->id)->where('peserta_nik', $reg->peserta_nik)->exists()) {
+            if ($firstTahapan && !PelatihanTahapanProgress::where('tahapan_id', $firstTahapan->id)->where('peserta_id', $reg->peserta_id)->exists()) {
                 PelatihanTahapanProgress::create([
                     'tahapan_id' => $firstTahapan->id,
-                    'peserta_nik' => $reg->peserta_nik,
+                    'peserta_id' => $reg->peserta_id,
                     'status' => 'active',
                     'completed_at' => null,
                 ]);

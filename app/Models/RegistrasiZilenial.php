@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class RegistrasiZilenial extends Model
 {
     protected $fillable = [
-        'peserta_nik',
+        'peserta_id',
         'kegiatan_id',
         'tahun',
         'status',
@@ -17,7 +17,7 @@ class RegistrasiZilenial extends Model
 
     public function peserta(): BelongsTo
     {
-        return $this->belongsTo(Peserta::class, 'peserta_nik', 'nik');
+        return $this->belongsTo(Peserta::class, 'peserta_id');
     }
 
     public function kegiatan(): BelongsTo

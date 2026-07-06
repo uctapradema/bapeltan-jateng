@@ -13,7 +13,7 @@ class RiwayatPelatihanPage extends Page
     protected static ?string $navigationIcon = 'heroicon-o-clock';
     protected static ?string $navigationLabel = 'Riwayat Pelatihan';
     protected static ?string $navigationGroup = 'Pelatihan';
-    protected static ?int $navigationSort = 3;
+    protected static ?int $navigationSort = 5;
 
     protected static string $view = 'filament.peserta.pages.riwayat-pelatihan';
 
@@ -30,7 +30,7 @@ class RiwayatPelatihanPage extends Page
         if (!$user->peserta) return;
 
         $registrasis = RegistrasiUlang::with(['kegiatan.kegiatanType', 'kegiatan.tahapans'])
-            ->where('peserta_nik', $user->peserta->nik)
+            ->where('peserta_id', $user->peserta->id)
             ->orderByDesc('created_at')
             ->get();
 
@@ -39,7 +39,7 @@ class RiwayatPelatihanPage extends Page
             $tahapans = $kegiatan->tahapans()->orderBy('urutan')->get();
             $totalTahapans = $tahapans->count();
 
-            $progress = PelatihanTahapanProgress::where('peserta_nik', $reg->peserta_nik)
+            $progress = PelatihanTahapanProgress::where('peserta_id', $reg->peserta_id)
                 ->whereIn('tahapan_id', $tahapans->pluck('id'))
                 ->get();
 
@@ -55,7 +55,7 @@ class RiwayatPelatihanPage extends Page
                 'total_tahapans' => $totalTahapans,
                 'completed_tahapans' => $completedTahapans,
                 'persentase' => $persentase,
-                'tipe_kegiatan' => $kegiatan->kegiatanType->nama_type ?? '-',
+                'tipe_kegiatan' => $kegiatan->kegiatanType?->nama_type ?? '-',
             ];
         })->toArray();
     }

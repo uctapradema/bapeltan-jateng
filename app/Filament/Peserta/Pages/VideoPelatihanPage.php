@@ -11,7 +11,7 @@ class VideoPelatihanPage extends Page
     protected static ?string $navigationIcon = 'heroicon-o-play-circle';
     protected static ?string $navigationLabel = 'Video Pelatihan';
     protected static ?string $navigationGroup = 'Pelatihan';
-    protected static ?int $navigationSort = 3;
+    protected static ?int $navigationSort = 2;
 
     protected static string $view = 'filament.peserta.pages.video-pelatihan';
 
@@ -43,7 +43,7 @@ class VideoPelatihanPage extends Page
                 'kegiatan_id' => $kegiatan->id,
                 'kode' => $kegiatan->kode_pelatihan ?? '-',
                 'nama' => $kegiatan->nama_pelatihan ?? '-',
-                'jenis' => $kegiatan->kegiatanType->nama_type ?? '-',
+                'jenis' => $kegiatan->kegiatanType?->nama_type ?? '-',
                 'mulai' => $kegiatan->tanggal_mulai?->format('d M Y') ?? '-',
                 'selesai' => $kegiatan->tanggal_selesai?->format('d M Y') ?? '-',
                 'video_url' => $kegiatan->video_url,

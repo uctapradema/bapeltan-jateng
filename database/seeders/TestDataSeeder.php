@@ -7,6 +7,7 @@ use App\Models\EvaluasiQuestion;
 use App\Models\EvaluasiQuestionOption;
 use App\Models\EvaluasiType;
 use App\Models\Group;
+use App\Models\Kabupaten;
 use App\Models\Kegiatan;
 use App\Models\KegiatanType;
 use App\Models\Peserta;
@@ -92,12 +93,18 @@ class TestDataSeeder extends Seeder
         ])->map(fn ($k) => Kegiatan::updateOrCreate(['kode_pelatihan' => $k['kode_pelatihan']], $k));
 
         // ── Users + Pesertas ──
+        $kTemanggung = Kabupaten::where('kode', 'TEM')->first();
+        $kMagelang   = Kabupaten::where('kode', 'MGL')->first();
+        $kSemarang   = Kabupaten::where('kode', 'SRG')->first();
+        $kKendal     = Kabupaten::where('kode', 'KDL')->first();
+        $kDemak      = Kabupaten::where('kode', 'DMK')->first();
+
         $pesertaData = [
             [
                 'user_email' => 'andi@gmail.com',
                 'user_name' => 'ANDI SAPUTRA',
                 'nik' => '3323011234560001',
-                'kabupaten_id' => 1,
+                'kabupaten_id' => $kSemarang->id,
                 'nama' => 'ANDI SAPUTRA',
                 'tempat_lahir' => 'Semarang',
                 'tanggal_lahir' => '1990-05-15',
@@ -116,7 +123,7 @@ class TestDataSeeder extends Seeder
                 'user_email' => 'siti@gmail.com',
                 'user_name' => 'SITI RAHAYU',
                 'nik' => '3323011234560002',
-                'kabupaten_id' => 2,
+                'kabupaten_id' => $kMagelang->id,
                 'nama' => 'SITI RAHAYU',
                 'tempat_lahir' => 'Solo',
                 'tanggal_lahir' => '1992-08-20',
@@ -135,7 +142,7 @@ class TestDataSeeder extends Seeder
                 'user_email' => 'budi@gmail.com',
                 'user_name' => 'BUDI CAHYONO',
                 'nik' => '3323011234560003',
-                'kabupaten_id' => 3,
+                'kabupaten_id' => $kMagelang->id,
                 'nama' => 'BUDI CAHYONO',
                 'tempat_lahir' => 'Magelang',
                 'tanggal_lahir' => '1988-03-10',
@@ -154,7 +161,7 @@ class TestDataSeeder extends Seeder
                 'user_email' => 'dewi@gmail.com',
                 'user_name' => 'DEWI LESTARI',
                 'nik' => '3323011234560004',
-                'kabupaten_id' => 4,
+                'kabupaten_id' => $kKendal->id,
                 'nama' => 'DEWI LESTARI',
                 'tempat_lahir' => 'Purwokerto',
                 'tanggal_lahir' => '1995-11-25',
@@ -173,7 +180,7 @@ class TestDataSeeder extends Seeder
                 'user_email' => 'eko@gmail.com',
                 'user_name' => 'EKO WIDODO',
                 'nik' => '3323011234560005',
-                'kabupaten_id' => 5,
+                'kabupaten_id' => $kDemak->id,
                 'nama' => 'EKO WIDODO',
                 'tempat_lahir' => 'Tegal',
                 'tanggal_lahir' => '1985-07-30',
@@ -205,6 +212,7 @@ class TestDataSeeder extends Seeder
             $peserta = Peserta::updateOrCreate(
                 ['nik' => $pd['nik']],
                 [
+                    'id' => \Illuminate\Support\Str::uuid(),
                     'user_id' => $user->id,
                     'kabupaten_id' => $pd['kabupaten_id'],
                     'nama' => $pd['nama'],
@@ -227,21 +235,21 @@ class TestDataSeeder extends Seeder
         }
 
         // ── Registrasi Ulangs ──
-        // Unique constraint: (peserta_nik, kegiatan_type_id, tahun) — 1 peserta per jenis per tahun
+        // Unique constraint: (peserta_id, kegiatan_type_id, tahun) — 1 peserta per jenis per tahun
         // kegiatans[0] = type 1, [1] = type 1, [2] = type 2, [3] = type 3, [4] = type 4, [5] = type 1
         $registrasiData = [
-            ['peserta_nik' => $pesertas[0]->nik, 'kegiatan_id' => $kegiatans[0]->id, 'status' => 'diterima'],
-            ['peserta_nik' => $pesertas[1]->nik, 'kegiatan_id' => $kegiatans[2]->id, 'status' => 'selesai'],
-            ['peserta_nik' => $pesertas[2]->nik, 'kegiatan_id' => $kegiatans[3]->id, 'status' => 'diterima'],
-            ['peserta_nik' => $pesertas[3]->nik, 'kegiatan_id' => $kegiatans[4]->id, 'status' => 'pending'],
-            ['peserta_nik' => $pesertas[4]->nik, 'kegiatan_id' => $kegiatans[0]->id, 'status' => 'ditolak'],
-            ['peserta_nik' => $pesertas[0]->nik, 'kegiatan_id' => $kegiatans[2]->id, 'status' => 'pending'],
+            ['peserta_id' => $pesertas[0]->id, 'kegiatan_id' => $kegiatans[0]->id, 'status' => 'diterima'],
+            ['peserta_id' => $pesertas[1]->id, 'kegiatan_id' => $kegiatans[2]->id, 'status' => 'selesai'],
+            ['peserta_id' => $pesertas[2]->id, 'kegiatan_id' => $kegiatans[3]->id, 'status' => 'diterima'],
+            ['peserta_id' => $pesertas[3]->id, 'kegiatan_id' => $kegiatans[4]->id, 'status' => 'pending'],
+            ['peserta_id' => $pesertas[4]->id, 'kegiatan_id' => $kegiatans[0]->id, 'status' => 'ditolak'],
+            ['peserta_id' => $pesertas[0]->id, 'kegiatan_id' => $kegiatans[2]->id, 'status' => 'pending'],
         ];
 
         foreach ($registrasiData as $rd) {
             $kegiatan = Kegiatan::find($rd['kegiatan_id']);
             RegistrasiUlang::updateOrCreate(
-                ['peserta_nik' => $rd['peserta_nik'], 'kegiatan_id' => $rd['kegiatan_id']],
+                ['peserta_id' => $rd['peserta_id'], 'kegiatan_id' => $rd['kegiatan_id']],
                 [
                     'kegiatan_type_id' => $kegiatan->kegiatan_type_id,
                     'tahun' => now()->year,

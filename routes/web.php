@@ -7,6 +7,7 @@ use App\Http\Controllers\SignInController;
 use App\Http\Controllers\CertificateController;
 
 Route::get('/', [SignInController::class, 'showLoginForm'])->name('login');
+Route::get('/login', [SignInController::class, 'showLoginForm'])->name('login.show');
 Route::post('/login', [SignInController::class, 'login'])->middleware('throttle:5,1')->name('login.perform');
 Route::post('/logout', [SignInController::class, 'logout'])->name('logout');
 

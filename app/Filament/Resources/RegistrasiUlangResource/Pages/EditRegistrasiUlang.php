@@ -25,10 +25,10 @@ class EditRegistrasiUlang extends EditRecord
         $record = $this->record;
         if ($record->status === 'diterima') {
             $firstTahapan = PelatihanTahapan::where('kegiatan_id', $record->kegiatan_id)->where('urutan', 1)->first();
-            if ($firstTahapan && !PelatihanTahapanProgress::where('tahapan_id', $firstTahapan->id)->where('peserta_nik', $record->peserta_nik)->exists()) {
+            if ($firstTahapan && !PelatihanTahapanProgress::where('tahapan_id', $firstTahapan->id)->where('peserta_id', $record->peserta_id)->exists()) {
                 PelatihanTahapanProgress::create([
                     'tahapan_id' => $firstTahapan->id,
-                    'peserta_nik' => $record->peserta_nik,
+                    'peserta_id' => $record->peserta_id,
                     'status' => 'active',
                 ]);
             }

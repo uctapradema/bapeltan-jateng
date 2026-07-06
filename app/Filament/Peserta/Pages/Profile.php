@@ -31,14 +31,14 @@ class Profile extends Page implements HasForms
         $peserta = $user->peserta;
 
         $this->form->fill([
-            'nama' => $peserta->nama ?? $user->name,
-            'email' => $peserta->email ?? $user->email,
-            'nomor_telepon' => $peserta->nomor_telepon ?? '',
-            'alamat_lengkap' => $peserta->alamat_lengkap ?? '',
-            'nama_poktan' => $peserta->nama_poktan ?? '',
-            'alamat_poktan' => $peserta->alamat_poktan ?? '',
-            'pekerjaan' => $peserta->pekerjaan ?? '',
-            'usaha_tani' => $peserta->usaha_tani ?? '',
+            'nama' => $peserta?->nama ?? $user->name,
+            'email' => $peserta?->email ?? $user->email,
+            'nomor_telepon' => $peserta?->nomor_telepon ?? '',
+            'alamat_lengkap' => $peserta?->alamat_lengkap ?? '',
+            'nama_poktan' => $peserta?->nama_poktan ?? '',
+            'alamat_poktan' => $peserta?->alamat_poktan ?? '',
+            'pekerjaan' => $peserta?->pekerjaan ?? '',
+            'usaha_tani' => $peserta?->usaha_tani ?? '',
         ]);
     }
 

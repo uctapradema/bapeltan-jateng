@@ -12,7 +12,7 @@ return new class extends Migration {
     {
         Schema::create('registrasi_ulangs', function (Blueprint $table) {
             $table->id();
-            $table->string('peserta_nik', 16);
+            $table->uuid('peserta_id');
 
             $table->uuid('kegiatan_id')->constrained()->cascadeOnDelete();
             $table->foreignId('kegiatan_type_id')->constrained('kegiatan_types')->cascadeOnDelete();
@@ -24,9 +24,9 @@ return new class extends Migration {
             $table->text('catatan')->nullable();
             $table->timestamps();
 
-            $table->foreign('peserta_nik')->references('nik')->on('pesertas')->cascadeOnDelete();
+            $table->foreign('peserta_id')->references('id')->on('pesertas')->cascadeOnDelete();
 
-            $table->unique(['peserta_nik', 'kegiatan_type_id', 'tahun']);
+            $table->unique(['peserta_id', 'kegiatan_type_id', 'tahun']);
         });
     }
 

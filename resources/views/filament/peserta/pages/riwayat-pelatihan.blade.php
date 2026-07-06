@@ -18,7 +18,7 @@
                                 <span>•</span>
                                 <span>{{ $item['tipe_kegiatan'] }}</span>
                                 <span>•</span>
-                                <span>{{ $item['kegiatan']->tanggal_mulai->format('d M Y') }} - {{ $item['kegiatan']->tanggal_selesai->format('d M Y') }}</span>
+                                <span>{{ $item['kegiatan']->tanggal_mulai?->format('d M Y') ?? '-' }} - {{ $item['kegiatan']->tanggal_selesai?->format('d M Y') ?? '-' }}</span>
                             </div>
                             <div class="mt-2 text-sm text-gray-500">
                                 Terdaftar: {{ $item['tanggal_daftar']->format('d M Y') }}

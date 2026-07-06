@@ -76,7 +76,7 @@ class ExportData extends Page
                 foreach ($registrasis as $reg) {
                     fputcsv($handle, [
                         $no++,
-                        $reg->peserta_nik,
+                        $reg->peserta->nik ?? '-',
                         $reg->peserta->nama ?? '-',
                         $reg->kegiatan->nama_pelatihan ?? '-',
                         $reg->status,

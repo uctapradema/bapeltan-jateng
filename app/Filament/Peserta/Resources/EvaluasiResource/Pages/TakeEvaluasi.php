@@ -38,7 +38,7 @@ class TakeEvaluasi extends Page implements Forms\Contracts\HasForms
             abort(403, 'Anda belum memiliki data peserta.');
         }
 
-        $registrasiUlang = RegistrasiUlang::where('peserta_nik', $peserta->nik)->where('kegiatan_id', $this->record->kegiatan_id)->where('status', 'diterima')->first();
+        $registrasiUlang = RegistrasiUlang::where('peserta_id', $peserta->id)->where('kegiatan_id', $this->record->kegiatan_id)->where('status', 'diterima')->first();
 
         if (!$registrasiUlang) {
             abort(403, 'Anda tidak terdaftar pada kegiatan ini.');

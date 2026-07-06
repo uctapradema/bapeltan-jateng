@@ -27,7 +27,7 @@ class RegistrasiUlangResource extends Resource
     public static function form(Form $form): Form
     {
         return $form->schema([
-            Forms\Components\Select::make('peserta_nik')->relationship('peserta', 'nama')->searchable()->preload()->required()->reactive()->label('Peserta'),
+            Forms\Components\Select::make('peserta_id')->relationship('peserta', 'nama')->searchable()->preload()->required()->reactive()->label('Peserta'),
             Forms\Components\Select::make('kegiatan_id')->relationship('kegiatan', 'nama_pelatihan')->searchable()->preload()->required()->label('Kegiatan Pelatihan'),
             Forms\Components\Select::make('status')
                 ->options([
@@ -104,10 +104,10 @@ class RegistrasiUlangResource extends Resource
                             new RegistrationStatusNotification($record, $oldStatus, 'diterima')
                         );
                         $firstTahapan = PelatihanTahapan::where('kegiatan_id', $record->kegiatan_id)->where('urutan', 1)->first();
-                        if ($firstTahapan && !PelatihanTahapanProgress::where('tahapan_id', $firstTahapan->id)->where('peserta_nik', $record->peserta_nik)->exists()) {
+                        if ($firstTahapan && !PelatihanTahapanProgress::where('tahapan_id', $firstTahapan->id)->where('peserta_id', $record->peserta_id)->exists()) {
                             PelatihanTahapanProgress::create([
                                 'tahapan_id' => $firstTahapan->id,
-                                'peserta_nik' => $record->peserta_nik,
+                                'peserta_id' => $record->peserta_id,
                                 'status' => 'active',
                             ]);
                         }

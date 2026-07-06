@@ -45,7 +45,8 @@ class RegistrasiUlangPage extends Page
         $user = Auth::user();
         if (!$user->peserta) return;
 
-        $registrasi = RegistrasiUlang::where('id', $registrasiId)
+        $registrasi = RegistrasiUlang::with('kegiatan')
+            ->where('id', $registrasiId)
             ->where('peserta_id', $user->peserta->id)
             ->where('status', 'diterima')
             ->first();
@@ -57,6 +58,6 @@ class RegistrasiUlangPage extends Page
 
         $registrasi->update(['status' => 'bersedia']);
 
-        session()->flash('success', "Konfirmasi kebersediaan untuk \"{$registrasi->kegiatan->nama_pelatihan}\" berhasil!");
+        session()->flash('success', "Konfirmasi kebersediaan untuk \"{$registrasi->kegiatan?->nama_pelatihan ?? '-'}\" berhasil!");
     }
 }

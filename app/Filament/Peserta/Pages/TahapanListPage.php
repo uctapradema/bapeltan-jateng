@@ -35,7 +35,7 @@ class TahapanListPage extends Page
             ->where('status', 'completed')
             ->with('tahapan')
             ->get()
-            ->groupBy(fn ($p) => $p->tahapan->kegiatan_id ?? null);
+            ->groupBy(fn ($p) => $p->tahapan?->kegiatan_id ?? null);
 
         $result = [];
         foreach ($registrasis as $reg) {

@@ -11,7 +11,7 @@ class RegistrasiUlang extends Model
     use HasFactory;
 
     protected $fillable = [
-        'peserta_nik',
+        'peserta_id',
         'kegiatan_id',
         'kegiatan_type_id',
         'tahun',
@@ -20,6 +20,8 @@ class RegistrasiUlang extends Model
         'sertifikat_path',
         'catatan_sertifikat',
         'tanggal_selesai_pelatihan',
+        'nomor_sertifikat',
+        'bersedia',
     ];
 
     protected $casts = [
@@ -30,7 +32,7 @@ class RegistrasiUlang extends Model
 
     public function peserta(): BelongsTo
     {
-        return $this->belongsTo(Peserta::class, 'peserta_nik', 'nik');
+        return $this->belongsTo(Peserta::class, 'peserta_id');
     }
 
     public function kegiatan(): BelongsTo

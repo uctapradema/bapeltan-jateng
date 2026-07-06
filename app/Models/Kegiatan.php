@@ -26,6 +26,7 @@ class Kegiatan extends Model
         'status',
         'deskripsi',
         'group_id',
+        'video_url',
     ];
 
     protected $casts = [
@@ -45,7 +46,7 @@ class Kegiatan extends Model
 
     public function pesertas(): BelongsToMany
     {
-        return $this->belongsToMany(Peserta::class, 'registrasi_ulangs', 'kegiatan_id', 'peserta_nik')->withPivot('status', 'catatan')->withTimestamps();
+        return $this->belongsToMany(Peserta::class, 'registrasi_ulangs', 'kegiatan_id', 'peserta_id')->withPivot('status', 'catatan')->withTimestamps();
     }
 
     public function getJumlahPesertaDiterimaAttribute(): int
@@ -71,5 +72,10 @@ class Kegiatan extends Model
     public function tahapans()
     {
         return $this->hasMany(PelatihanTahapan::class);
+    }
+
+    public function materis()
+    {
+        return $this->hasMany(Materi::class);
     }
 }

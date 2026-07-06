@@ -13,7 +13,7 @@ class EvaluasiResponseResource extends Resource
 {
     protected static ?string $model = EvaluasiResponse::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o ClipboardDocumentCheck';
+    protected static ?string $navigationIcon = 'heroicon-o-clipboard-document-check';
     protected static ?string $navigationGroup = 'EVALUASI';
     protected static ?int $navigationSort = 3;
 

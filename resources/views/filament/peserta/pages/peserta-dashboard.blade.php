@@ -62,7 +62,7 @@
                                     @else
                                         <x-filament::button
                                             size="xs"
-                                            wire:click="daftarKegiatan({{ $item['id'] }})"
+                                            wire:click="daftarKegiatan('{{ $item['id'] }}')"
                                             wire:confirm="Yakin ingin mendaftar kegiatan ini?"
                                             color="primary"
                                         >

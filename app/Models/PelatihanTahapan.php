@@ -32,4 +32,9 @@ class PelatihanTahapan extends Model
     {
         return $this->hasMany(PelatihanTahapanProgress::class, 'tahapan_id');
     }
+
+    public function questions(): HasMany
+    {
+        return $this->hasMany(PelatihanTahapanQuestion::class, 'tahapan_id');
+    }
 }

@@ -43,7 +43,7 @@ class KegiatanTahapanPage extends Page
 
         $this->kegiatanId = $kegiatanId;
 
-        $reg = RegistrasiUlang::where('peserta_nik', $user->peserta->nik)
+        $reg = RegistrasiUlang::where('peserta_id', $user->peserta->id)
             ->where('kegiatan_id', $kegiatanId)
             ->whereIn('status', ['diterima', 'bersedia'])
             ->with('kegiatan')
@@ -68,7 +68,7 @@ class KegiatanTahapanPage extends Page
             ->orderBy('urutan')
             ->get();
 
-        $progressMap = PelatihanTahapanProgress::where('peserta_nik', $user->peserta->nik)
+        $progressMap = PelatihanTahapanProgress::where('peserta_id', $user->peserta->id)
             ->whereIn('tahapan_id', $allTahapans->pluck('id'))
             ->pluck('status', 'tahapan_id')
             ->toArray();
@@ -104,7 +104,7 @@ class KegiatanTahapanPage extends Page
         if (!$tahapan || $tahapan->kegiatan_id !== $this->kegiatanId) return;
 
         $service = app(TahapanProgressService::class);
-        $service->completeTahapan($tahapanId, $peserta->nik);
+        $service->completeTahapan($tahapanId, $peserta->id);
 
         session()->flash('success', "Tahapan \"{$tahapan->nama}\" berhasil diselesaikan!");
         $this->redirect(route('filament.peserta.pages.kegiatan-tahapan-page', ['kegiatanId' => $this->kegiatanId]));

@@ -36,7 +36,7 @@ class RegistrasiZilenialResource extends Resource
         }
 
         return static::getModel()::query()
-            ->where('peserta_nik', $peserta->nik);
+            ->where('peserta_id', $peserta->id);
     }
 
     public static function form(Form $form): Form

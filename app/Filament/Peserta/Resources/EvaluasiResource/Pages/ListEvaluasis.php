@@ -27,10 +27,10 @@ class ListEvaluasis extends ListRecords
             return Evaluasi::query()->whereRaw('0=1');
         }
 
-        $pesertaNik = $user->peserta->nik;
+        $pesertaId = $user->peserta->id;
 
         // Ambil daftar kegiatan yang statusnya diterima
-        $kegiatanIds = RegistrasiUlang::where('peserta_nik', $pesertaNik)
+        $kegiatanIds = RegistrasiUlang::where('peserta_id', $pesertaId)
             ->where('status', 'diterima')
             ->pluck('kegiatan_id');
 

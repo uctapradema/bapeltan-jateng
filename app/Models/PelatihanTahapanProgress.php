@@ -9,7 +9,7 @@ class PelatihanTahapanProgress extends Model
 {
     protected $fillable = [
         'tahapan_id',
-        'peserta_nik',
+        'peserta_id',
         'status',
         'catatan',
         'jawaban',
@@ -28,6 +28,6 @@ class PelatihanTahapanProgress extends Model
 
     public function peserta(): BelongsTo
     {
-        return $this->belongsTo(Peserta::class, 'peserta_nik', 'nik');
+        return $this->belongsTo(Peserta::class, 'peserta_id');
     }
 }

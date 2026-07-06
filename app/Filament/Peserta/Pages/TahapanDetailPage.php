@@ -58,11 +58,11 @@ class TahapanDetailPage extends Page
         $this->isHarian = $tahapan->tipe === 'harian';
 
         $progress = PelatihanTahapanProgress::where('tahapan_id', $tahapanId)
-            ->where('peserta_nik', $user->peserta->nik)
+            ->where('peserta_id', $user->peserta->id)
             ->first();
 
         $this->isCompleted = !$this->isHarian && $progress && $progress->status === 'completed';
-        $savedJawaban = $progress->jawaban ?? [];
+        $savedJawaban = $progress?->jawaban ?? [];
 
         $this->tahapan = [
             'id' => $tahapan->id,
@@ -136,10 +136,10 @@ class TahapanDetailPage extends Page
 
         if ($this->isHarian) {
             $progress = PelatihanTahapanProgress::where('tahapan_id', $this->tahapanId)
-                ->where('peserta_nik', $user->peserta->nik)
+                ->where('peserta_id', $user->peserta->id)
                 ->first();
 
-            $existingJawaban = $progress->jawaban ?? [];
+            $existingJawaban = $progress?->jawaban ?? [];
             $riwayat = $existingJawaban['riwayat'] ?? [];
 
             $riwayat[$this->todayDate] = [
@@ -150,7 +150,7 @@ class TahapanDetailPage extends Page
             $newJawaban = ['riwayat' => $riwayat];
 
             PelatihanTahapanProgress::updateOrCreate(
-                ['tahapan_id' => $this->tahapanId, 'peserta_nik' => $user->peserta->nik],
+                ['tahapan_id' => $this->tahapanId, 'peserta_id' => $user->peserta->id],
                 [
                     'jawaban' => $newJawaban,
                 ]
@@ -160,7 +160,7 @@ class TahapanDetailPage extends Page
             session()->flash('success', 'Daily Mood hari ini berhasil disimpan!');
         } else {
             PelatihanTahapanProgress::updateOrCreate(
-                ['tahapan_id' => $this->tahapanId, 'peserta_nik' => $user->peserta->nik],
+                ['tahapan_id' => $this->tahapanId, 'peserta_id' => $user->peserta->id],
                 [
                     'jawaban' => $this->jawaban,
                 ]
@@ -195,7 +195,7 @@ class TahapanDetailPage extends Page
         }
 
         $service = app(TahapanProgressService::class);
-        $service->completeTahapan($this->tahapanId, $user->peserta->nik, $this->jawaban);
+        $service->completeTahapan($this->tahapanId, $user->peserta->id, $this->jawaban);
 
         session()->flash('success', "Tahapan \"{$tahapan->nama}\" berhasil diselesaikan!");
         $this->isCompleted = true;
