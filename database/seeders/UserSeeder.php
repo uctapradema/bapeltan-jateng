@@ -18,7 +18,7 @@ class UserSeeder extends Seeder
             'email' => 'bapeltan@gmail.com',
         ], [
             'name' => 'Admin',
-            'password' => Hash::make(env('ADMIN_PASSWORD', 'password')),
+            'password' => Hash::make(config('app.admin_password', 'password')),
             'role' => 'admin',
             'email_verified_at' => now(),
         ]);

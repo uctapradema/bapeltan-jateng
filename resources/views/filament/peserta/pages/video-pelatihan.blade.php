@@ -29,10 +29,10 @@
                 @foreach($kegiatanList as $item)
                     @php
                         $isActive = $selectedKegiatanId === $item['kegiatan_id'];
-                        $statusColor = match($item['status_reg']) {
-                            'selesai' => 'success',
-                            'bersedia' => 'info',
-                            default => 'warning',
+                        $statusColorClass = match($item['status_reg']) {
+                            'selesai' => 'bg-green-500/90',
+                            'bersedia' => 'bg-blue-500/90',
+                            default => 'bg-yellow-500/90',
                         };
                         $statusLabel = match($item['status_reg']) {
                             'selesai' => 'Selesai',
@@ -75,7 +75,7 @@
 
                             {{-- Status badge --}}
                             <div class="absolute top-2 right-2">
-                                <span class="inline-flex items-center rounded-full bg-{{ $statusColor }}/90 px-2 py-0.5 text-[10px] font-semibold text-white backdrop-blur-sm">
+                                <span class="inline-flex items-center rounded-full {{ $statusColorClass }} px-2 py-0.5 text-[10px] font-semibold text-white backdrop-blur-sm">
                                     {{ $statusLabel }}
                                 </span>
                             </div>

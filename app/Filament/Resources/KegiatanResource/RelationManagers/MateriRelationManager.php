@@ -67,7 +67,7 @@ class MateriRelationManager extends RelationManager
                         ->label('Upload File')
                         ->directory('materis')
                         ->visibility('public')
-                        ->maxSize(51200) // 50MB
+                        ->maxSize(51200) // 50KB
                         ->acceptedFileTypes([
                             'video/mp4', 'video/webm', 'video/ogg',
                             'application/pdf',

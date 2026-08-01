@@ -32,7 +32,7 @@ class MateriPelatihanPage extends Page
 
     public function mount(): void
     {
-        $user = auth()->user();
+        $user = \Illuminate\Support\Facades\Auth::user();
         $peserta = $user->peserta;
 
         if (!$peserta) {

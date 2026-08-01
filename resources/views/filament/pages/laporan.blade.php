@@ -52,12 +52,12 @@
                 <div class="space-y-2">
                     @forelse($pesertaPerType as $item)
                         <div class="flex items-center justify-between">
-                            <span class="text-sm">{{ $item->nama_type }}</span>
+                            <span class="text-sm">{{ $item['nama_type'] }}</span>
                             <div class="flex items-center gap-2">
                                 <div class="w-32 h-2 bg-gray-200 rounded-full overflow-hidden">
-                                    <div class="h-full bg-primary-500 rounded-full" style="width: {{ $statistik['total_registrasi'] > 0 ? ($item->total / $statistik['total_registrasi'] * 100) : 0 }}%"></div>
+                                    <div class="h-full bg-primary-500 rounded-full" style="width: {{ $statistik['total_registrasi'] > 0 ? ($item['total'] / $statistik['total_registrasi'] * 100) : 0 }}%"></div>
                                 </div>
-                                <span class="text-sm font-medium text-gray-600 w-8 text-right">{{ $item->total }}</span>
+                                <span class="text-sm font-medium text-gray-600 w-8 text-right">{{ $item['total'] }}</span>
                             </div>
                         </div>
                     @empty
@@ -73,10 +73,10 @@
                 <div class="space-y-2">
                     @foreach($registrasiPerStatus as $item)
                         <div class="flex items-center justify-between">
-                            <x-filament::badge color="{{ match($item->status) { 'pending' => 'warning', 'diterima' => 'success', 'ditolak' => 'danger', 'bersedia' => 'info', 'selesai' => 'success', default => 'gray' } }}">
-                                {{ ucfirst($item->status) }}
+                            <x-filament::badge color="{{ match($item['status']) { 'pending' => 'warning', 'diterima' => 'success', 'ditolak' => 'danger', 'bersedia' => 'info', 'selesai' => 'success', default => 'gray' } }}">
+                                {{ ucfirst($item['status']) }}
                             </x-filament::badge>
-                            <span class="text-sm font-medium">{{ $item->total }}</span>
+                            <span class="text-sm font-medium">{{ $item['total'] }}</span>
                         </div>
                     @endforeach
                 </div>

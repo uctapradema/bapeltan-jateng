@@ -11,6 +11,7 @@ use Filament\Widgets\StatsOverviewWidget\Stat;
 class AdminStatsOverviewWidget extends StatsOverviewWidget
 {
     protected static ?int $sort = 0;
+    protected static ?int $columns = 2;
 
     protected function getStats(): array
     {

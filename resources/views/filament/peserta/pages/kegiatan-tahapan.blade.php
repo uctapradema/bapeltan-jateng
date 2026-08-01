@@ -1,9 +1,9 @@
 <x-filament::page>
     @if($kegiatan)
-        <div style="display:grid !important;grid-template-columns:1fr 380px !important;gap:24px !important;align-items:start !important;">
+        <div class="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-6 items-start">
 
             {{-- KIRI: Info Kegiatan + Timeline --}}
-            <div style="min-width:0;">
+            <div class="min-w-0">
                 {{-- Header --}}
                 <div class="mb-4">
                     <a href="{{ route('filament.peserta.pages.peserta-dashboard') }}"
@@ -89,7 +89,7 @@
             </div>
 
             {{-- KANAN: Sidebar Summary --}}
-            <div style="position:sticky !important;top:80px !important;">
+            <div class="sticky top-20">
                 <div class="rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 overflow-hidden">
                     <div class="px-4 py-3 bg-gray-50 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
                         <h3 class="text-sm font-semibold text-gray-900 dark:text-white">Ringkasan</h3>

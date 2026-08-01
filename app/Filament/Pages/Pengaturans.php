@@ -5,13 +5,7 @@ namespace App\Filament\Pages;
 use Filament\Forms;
 use Filament\Pages\Page;
 use App\Models\Pengaturan;
-use Forms\Contracts\HasForms;
-use Filament\Forms\Components\Tabs;
-use Filament\Forms\Components\Repeater;
-use Filament\Forms\Components\Textarea;
-use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
-use Filament\Forms\Components\DatePicker;
 
 class Pengaturans extends Page implements Forms\Contracts\HasForms
 {
@@ -44,64 +38,69 @@ class Pengaturans extends Page implements Forms\Contracts\HasForms
             'fasilitas' => [],
         ]);
 
-        $this->judul = $this->pengaturan->judul;
-        $this->sub_judul = $this->pengaturan->sub_judul;
-        $this->tanggal_tutup = $this->pengaturan->tanggal_tutup;
-        $this->info = $this->pengaturan->info;
-        $this->lokasi = $this->pengaturan->lokasi;
-        $this->persyaratan = $this->pengaturan->persyaratan ?? [];
-        $this->fasilitas = $this->pengaturan->fasilitas ?? [];
+        $this->form->fill([
+            'judul' => $this->pengaturan->judul,
+            'sub_judul' => $this->pengaturan->sub_judul,
+            'tanggal_tutup' => $this->pengaturan->tanggal_tutup,
+            'info' => $this->pengaturan->info,
+            'lokasi' => $this->pengaturan->lokasi,
+            'persyaratan' => $this->pengaturan->persyaratan ?? [],
+            'fasilitas' => $this->pengaturan->fasilitas ?? [],
+        ]);
     }
 
-    protected function getFormSchema(): array
+    public function form(Forms\Form $form): Forms\Form
     {
-        return [
-            Tabs::make('Tabs')
-                ->tabs([
-                    Tabs\Tab::make('UMUM')
-                        ->schema([
-                            TextInput::make('judul')->required(),
-                            TextInput::make('sub_judul')->required(),
-                            DatePicker::make('tanggal_tutup')
-                                ->label('Batas Pendaftaran')
-                                ->required(),
-                            Textarea::make('info'),
-                            TextInput::make('lokasi'),
-                        ]),
+        return $form
+            ->schema([
+                Forms\Components\Tabs::make('Tabs')
+                    ->tabs([
+                        Forms\Components\Tabs\Tab::make('UMUM')
+                            ->schema([
+                                Forms\Components\TextInput::make('judul')->required(),
+                                Forms\Components\TextInput::make('sub_judul')->required(),
+                                Forms\Components\DatePicker::make('tanggal_tutup')
+                                    ->label('Batas Pendaftaran')
+                                    ->required(),
+                                Forms\Components\Textarea::make('info'),
+                                Forms\Components\TextInput::make('lokasi'),
+                            ]),
 
-                    Tabs\Tab::make('PERSYARATAN')
-                        ->schema([
-                            Repeater::make('persyaratan')
-                                ->schema([
-                                    TextInput::make('nama')->required(),
-                                ])
-                                ->createItemButtonLabel('Tambah Persyaratan')
-                                ->columnSpan('full'),
-                        ]),
+                        Forms\Components\Tabs\Tab::make('PERSYARATAN')
+                            ->schema([
+                                Forms\Components\Repeater::make('persyaratan')
+                                    ->schema([
+                                        Forms\Components\TextInput::make('nama')->required(),
+                                    ])
+                                    ->createItemButtonLabel('Tambah Persyaratan')
+                                    ->columnSpan('full'),
+                            ]),
 
-                    Tabs\Tab::make('FASILITAS')
-                        ->schema([
-                            Repeater::make('fasilitas')
-                                ->schema([
-                                    TextInput::make('nama')->required(),
-                                ])
-                                ->createItemButtonLabel('Tambah Fasilitas')
-                                ->columnSpan('full'),
-                        ]),
-                ]),
-        ];
+                        Forms\Components\Tabs\Tab::make('FASILITAS')
+                            ->schema([
+                                Forms\Components\Repeater::make('fasilitas')
+                                    ->schema([
+                                        Forms\Components\TextInput::make('nama')->required(),
+                                    ])
+                                    ->createItemButtonLabel('Tambah Fasilitas')
+                                    ->columnSpan('full'),
+                            ]),
+                    ]),
+            ]);
     }
 
     public function save(): void
     {
+        $state = $this->form->getState();
+
         $this->pengaturan->update([
-            'judul' => $this->judul,
-            'sub_judul' => $this->sub_judul,
-            'tanggal_tutup' => $this->tanggal_tutup,
-            'info' => $this->info,
-            'lokasi' => $this->lokasi,
-            'persyaratan' => $this->persyaratan,
-            'fasilitas' => $this->fasilitas,
+            'judul' => $state['judul'] ?? '',
+            'sub_judul' => $state['sub_judul'] ?? '',
+            'tanggal_tutup' => $state['tanggal_tutup'] ?? null,
+            'info' => $state['info'] ?? '',
+            'lokasi' => $state['lokasi'] ?? '',
+            'persyaratan' => $state['persyaratan'] ?? [],
+            'fasilitas' => $state['fasilitas'] ?? [],
         ]);
 
         Notification::make()

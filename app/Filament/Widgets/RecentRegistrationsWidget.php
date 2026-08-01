@@ -12,6 +12,12 @@ class RecentRegistrationsWidget extends TableWidget
     protected static ?string $heading = 'Registrasi Terbaru';
     protected static ?int $sort = 1;
     protected static ?string $maxHeight = '300px';
+    protected static ?int $columns = 1;
+
+    public function getExtraAttributes(): array
+    {
+        return ['class' => 'ml-auto'];
+    }
 
     public function table(Table $table): Table
     {

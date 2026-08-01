@@ -112,8 +112,8 @@
 <body>
     <div class="certificate">
         <div class="header">
-            <div class="logo">BALAI PELATIHAN PERTANIAN</div>
-            <div class="instansi">JAWA TENGAH</div>
+            <div class="logo">{{ $instansi ?? 'BALAI PELATIHAN PERTANIAN' }}</div>
+            <div class="instansi">{{ $provinsi ?? 'JAWA TENGAH' }}</div>
         </div>
 
         <div class="title">SERTIFIKAT</div>
@@ -129,7 +129,7 @@
             telah berhasil menyelesaikan pelatihan
             <strong>{{ $kegiatan->nama_pelatihan }}</strong>
             dengan kode <strong>{{ $kegiatan->kode_pelatihan }}</strong>
-            yang diselenggarakan oleh Balai Pelatihan Pertanian Jawa Tengah
+            yang diselenggarakan oleh {{ $instansi_penuh ?? 'Balai Pelatihan Pertanian Jawa Tengah' }}
             pada tanggal {{ $kegiatan->tanggal_mulai->format('d M Y') }}
             s/d {{ $kegiatan->tanggal_selesai->format('d M Y') }}
             dengan total durasi {{ $kegiatan->tanggal_mulai->diffInDays($kegiatan->tanggal_selesai) + 1 }} hari.
@@ -137,20 +137,20 @@
 
         <div class="sign-section">
             <div class="sign-block">
-                <div class="title">Mengetahui,<br>Kepala Balai Pelatihan Pertanian</div>
-                <div class="nip">NIP. ...................</div>
+                <div class="title">Mengetahui,<br>Kepala {{ $instansi ?? 'Balai Pelatihan Pertanian' }}</div>
+                <div class="nip">NIP. {{ $nip_kepala ?? '...................' }}</div>
             </div>
             <div class="sign-block">
                 <div class="title">&nbsp;</div>
             </div>
             <div class="sign-block">
                 <div class="title">Semarang, {{ now()->format('d M Y') }}<br>Kepala Bidang Pelatihan</div>
-                <div class="nip">NIP. ...................</div>
+                <div class="nip">NIP. {{ $nip_kabid ?? '...................' }}</div>
             </div>
         </div>
 
         <div class="footer">
-            Sertifikat ini diterbitkan secara digital oleh Sistem Informasi Manajemen Pelatihan Bapeltan Jawa Tengah
+            {{ $footer ?? 'Sertifikat ini diterbitkan secara digital oleh Sistem Informasi Manajemen Pelatihan Bapeltan Jawa Tengah' }}
         </div>
     </div>
 </body>

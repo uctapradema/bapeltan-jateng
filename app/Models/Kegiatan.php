@@ -1,11 +1,11 @@
 <?php
-// app/Models/Kegiatan.php
 
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 
@@ -34,7 +34,7 @@ class Kegiatan extends Model
         'tanggal_selesai' => 'date',
     ];
 
-    public function kegiatanType()
+    public function kegiatanType(): BelongsTo
     {
         return $this->belongsTo(KegiatanType::class);
     }
@@ -46,7 +46,9 @@ class Kegiatan extends Model
 
     public function pesertas(): BelongsToMany
     {
-        return $this->belongsToMany(Peserta::class, 'registrasi_ulangs', 'kegiatan_id', 'peserta_id')->withPivot('status', 'catatan')->withTimestamps();
+        return $this->belongsToMany(Peserta::class, 'registrasi_ulangs', 'kegiatan_id', 'peserta_id')
+            ->withPivot('status', 'catatan')
+            ->withTimestamps();
     }
 
     public function getJumlahPesertaDiterimaAttribute(): int
@@ -64,17 +66,17 @@ class Kegiatan extends Model
         return $query->where('status', 'active');
     }
 
-    public function group()
+    public function group(): BelongsTo
     {
         return $this->belongsTo(Group::class);
     }
 
-    public function tahapans()
+    public function tahapans(): HasMany
     {
         return $this->hasMany(PelatihanTahapan::class);
     }
 
-    public function materis()
+    public function materis(): HasMany
     {
         return $this->hasMany(Materi::class);
     }

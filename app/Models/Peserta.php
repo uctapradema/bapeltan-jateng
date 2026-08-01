@@ -1,5 +1,4 @@
 <?php
-// app/Models/Peserta.php
 
 namespace App\Models;
 
@@ -16,13 +15,18 @@ class Peserta extends Model
     public $incrementing = false;
     protected $keyType = 'string';
 
-    protected $fillable = ['id', 'nik', 'nama', 'tempat_lahir', 'tanggal_lahir', 'role', 'nomor_telepon', 'agama', 'jenis_kelamin', 'status_pernikahan', 'pendidikan_terakhir', 'pekerjaan', 'usaha_tani', 'alamat_lengkap', 'nama_poktan', 'alamat_poktan', 'nip', 'email', 'kabupaten_id'];
+    protected $fillable = [
+        'id', 'nik', 'nama', 'tempat_lahir', 'tanggal_lahir', 'role',
+        'nomor_telepon', 'agama', 'jenis_kelamin', 'status_pernikahan',
+        'pendidikan_terakhir', 'pekerjaan', 'usaha_tani', 'alamat_lengkap',
+        'nama_poktan', 'alamat_poktan', 'nip', 'email', 'kabupaten_id',
+    ];
 
     protected $casts = [
         'tanggal_lahir' => 'date',
     ];
 
-    public function user()
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
@@ -49,11 +53,15 @@ class Peserta extends Model
 
     public function kegiatans(): BelongsToMany
     {
-        return $this->belongsToMany(Kegiatan::class, 'registrasi_ulangs', 'peserta_id', 'kegiatan_id')->withPivot('status', 'catatan')->withTimestamps();
+        return $this->belongsToMany(Kegiatan::class, 'registrasi_ulangs', 'peserta_id', 'kegiatan_id')
+            ->withPivot('status', 'catatan')
+            ->withTimestamps();
     }
 
-    public function getUsiaAttribute(): int
+    public function getUsiaAttribute(): ?int
     {
+        if (!$this->tanggal_lahir) return null;
+
         return now()->diffInYears($this->tanggal_lahir);
     }
 

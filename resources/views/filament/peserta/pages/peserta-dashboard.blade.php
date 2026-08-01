@@ -1,21 +1,21 @@
 <x-filament::page>
     {{-- Stats Cards --}}
-    <div style="display:grid !important;grid-template-columns:repeat(4,1fr) !important;gap:8px !important;margin-bottom:24px !important;">
-        <div style="text-align:center;background:var(--gray-800,#1f2937);border-radius:8px;padding:12px 8px;">
-            <div style="font-size:20px;font-weight:700;color:#3b82f6;">{{ $this->getJumlahPelatihan() }}</div>
-            <div style="font-size:12px;color:#9ca3af;">Total</div>
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-6">
+        <div class="text-center bg-white dark:bg-gray-900 rounded-lg p-3 border border-gray-200 dark:border-gray-700">
+            <div class="text-xl font-bold text-blue-500">{{ $this->getJumlahPelatihan() }}</div>
+            <div class="text-xs text-gray-500">Total</div>
         </div>
-        <div style="text-align:center;background:var(--gray-800,#1f2937);border-radius:8px;padding:12px 8px;">
-            <div style="font-size:20px;font-weight:700;color:#22c55e;">{{ $this->getPelatihanDiterima() }}</div>
-            <div style="font-size:12px;color:#9ca3af;">Diterima</div>
+        <div class="text-center bg-white dark:bg-gray-900 rounded-lg p-3 border border-gray-200 dark:border-gray-700">
+            <div class="text-xl font-bold text-green-500">{{ $this->getPelatihanDiterima() }}</div>
+            <div class="text-xs text-gray-500">Diterima</div>
         </div>
-        <div style="text-align:center;background:var(--gray-800,#1f2937);border-radius:8px;padding:12px 8px;">
-            <div style="font-size:20px;font-weight:700;color:#f59e0b;">{{ $this->getPelatihanPending() }}</div>
-            <div style="font-size:12px;color:#9ca3af;">Pending</div>
+        <div class="text-center bg-white dark:bg-gray-900 rounded-lg p-3 border border-gray-200 dark:border-gray-700">
+            <div class="text-xl font-bold text-yellow-500">{{ $this->getPelatihanPending() }}</div>
+            <div class="text-xs text-gray-500">Pending</div>
         </div>
-        <div style="text-align:center;background:var(--gray-800,#1f2937);border-radius:8px;padding:12px 8px;">
-            <div style="font-size:20px;font-weight:700;color:#06b6d4;">{{ $this->getPelatihanSelesai() }}</div>
-            <div style="font-size:12px;color:#9ca3af;">Selesai</div>
+        <div class="text-center bg-white dark:bg-gray-900 rounded-lg p-3 border border-gray-200 dark:border-gray-700">
+            <div class="text-xl font-bold text-cyan-500">{{ $this->getPelatihanSelesai() }}</div>
+            <div class="text-xs text-gray-500">Selesai</div>
         </div>
     </div>
 

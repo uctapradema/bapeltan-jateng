@@ -164,7 +164,7 @@
                     <p class="font-medium">Tidak ada pertanyaan</p>
                     <p class="text-sm">Tahapan ini belum memiliki pertanyaan.</p>
                     @if(!$isCompleted)
-                        <button wire:click="selesaikanTahapan"
+                        <button wire:click="selesaikanTahapan({{ $this->tahapanId }})"
                                 class="mt-4 px-4 py-2 text-sm font-medium text-white bg-primary-600 rounded-lg hover:bg-primary-700">
                             Selesaikan Tahapan
                         </button>

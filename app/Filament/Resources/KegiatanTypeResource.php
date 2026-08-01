@@ -47,7 +47,7 @@ class KegiatanTypeResource extends Resource
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
-            ->reorderable(['nama_type']);
+            ->reorderable('nama_type');
     }
 
     public static function getPages(): array

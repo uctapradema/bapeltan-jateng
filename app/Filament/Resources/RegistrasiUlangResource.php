@@ -43,7 +43,7 @@ class RegistrasiUlangResource extends Resource
                 ->label('Upload Sertifikat')
                 ->directory('sertifikats')
                 ->acceptedFileTypes(['application/pdf', 'image/jpeg', 'image/png'])
-                ->maxSize(5120) // 5MB
+                ->maxSize(5120) // 5KB
                 ->nullable()
                 ->helperText('Format: PDF, JPG, PNG (Maksimal 5MB)'),
             Forms\Components\Textarea::make('catatan_sertifikat')->label('Catatan Sertifikat')->nullable()->helperText('Catatan tambahan mengenai sertifikat'),
