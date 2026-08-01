@@ -3,6 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\PelatihanTahapanResource\Pages;
+use App\Filament\Resources\PelatihanTahapanResource\RelationManagers;
 use App\Models\PelatihanTahapan;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -103,7 +104,10 @@ class PelatihanTahapanResource extends Resource
 
     public static function getRelations(): array
     {
-        return [];
+        return [
+            RelationManagers\ProgressRelationManager::class,
+            RelationManagers\QuestionsRelationManager::class,
+        ];
     }
 
     public static function getPages(): array

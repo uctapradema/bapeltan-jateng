@@ -51,12 +51,12 @@ class User extends Authenticatable
         };
     }
 
-    public function registrasiUlangs()
+    public function registrasiUlangs(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(RegistrasiUlang::class, 'user_id', 'id');
     }
 
-    public function peserta()
+    public function peserta(): \Illuminate\Database\Eloquent\Relations\HasOne
     {
         return $this->hasOne(Peserta::class, 'user_id', 'id');
     }

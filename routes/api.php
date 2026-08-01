@@ -40,7 +40,7 @@ Route::get('/cek-nik', function (CekNikRequest $request) {
             'nama' => $peserta->nama,
             'alamat' => $peserta->alamat_lengkap,
             'poktan' => $peserta->nama_poktan,
-            'kabupaten' => $peserta->kabupaten->name ?? null,
+            'kabupaten' => $peserta->kabupaten->nama ?? null,
             'registrasi' => $registrasi,
         ],
     ]);
@@ -53,7 +53,7 @@ Route::post('/daftar-pelatihan', function (DaftarPelatihanRequest $request) {
         $kegiatan = Kegiatan::with('kegiatanType')->findOrFail($request->kegiatan_id);
 
         // Cek duplikasi
-        $alreadyRegistered = RegistrasiUlang::where('peserta_nik', $peserta->nik)
+        $alreadyRegistered = RegistrasiUlang::where('peserta_id', $peserta->id)
             ->where('kegiatan_id', $kegiatan->id)
             ->exists();
 
@@ -68,7 +68,7 @@ Route::post('/daftar-pelatihan', function (DaftarPelatihanRequest $request) {
         $tanggalMulai = $kegiatan->tanggal_mulai->toDateString();
         $tanggalSelesai = $kegiatan->tanggal_selesai->toDateString();
 
-        $conflict = RegistrasiUlang::where('peserta_nik', $peserta->nik)
+        $conflict = RegistrasiUlang::where('peserta_id', $peserta->id)
             ->whereHas('kegiatan', function ($query) use ($tanggalMulai, $tanggalSelesai) {
                 $query->where(function ($q) use ($tanggalMulai, $tanggalSelesai) {
                     $q->whereBetween('tanggal_mulai', [$tanggalMulai, $tanggalSelesai])
@@ -99,10 +99,8 @@ Route::post('/daftar-pelatihan', function (DaftarPelatihanRequest $request) {
 
         // Buat registrasi
         $registrasi = RegistrasiUlang::create([
-            'peserta_nik' => $peserta->nik,
+            'peserta_id' => $peserta->id,
             'kegiatan_id' => $kegiatan->id,
-            'kegiatan_type_id' => $kegiatan->kegiatan_type_id,
-            'tahun' => $kegiatan->tanggal_mulai->format('Y'),
             'status' => 'pending',
         ]);
 

@@ -18,6 +18,7 @@ use Filament\Forms\Components\Select;
 use Filament\Notifications\Notification;
 use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\KegiatanResource\Pages;
+use App\Filament\Resources\KegiatanResource\RelationManagers;
 
 class KegiatanResource extends Resource
 {
@@ -177,7 +178,7 @@ class KegiatanResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            RelationManagers\MateriRelationManager::class,
         ];
     }
 
